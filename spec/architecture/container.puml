@@ -1,0 +1,23 @@
+@startuml
+title TPL Architecture - Container View
+
+left to right direction
+skinparam shadowing false
+
+rectangle "Frontend (React + Vite)\nfrontend/src/**" as FE
+rectangle "Backend API (FastAPI)\nbackend/app/routers/**" as API
+rectangle "Backend Features (Services)\nbackend/app/features/**" as SVC
+rectangle "Domain Model (SQLAlchemy)\nbackend/app/model/**" as MODEL
+database "Database\nSQLite/Postgres-compatible" as DB
+rectangle "Spec Tooling\nqa/spec_tools/**" as QA
+folder "Specifications\nspec/**" as SPEC
+
+FE --> API : JSON/HTTP
+API --> SVC : orchestrates use-cases
+SVC --> MODEL : domain + persistence operations
+MODEL --> DB : ORM mapping
+QA --> SPEC : reads spec artifacts
+QA --> MODEL : introspects SQLAlchemy metadata
+QA --> API : optional spec-driven runtime checks
+
+@enduml

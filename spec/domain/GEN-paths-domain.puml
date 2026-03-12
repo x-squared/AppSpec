@@ -1,0 +1,57 @@
+@startuml
+title TPL Domain Paths - GEN
+
+hide methods
+hide stereotypes
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+left to right direction
+
+class User
+class Role
+class Permission
+class Patient
+class Episode
+class MedicalValue
+class Colloqium
+class ColloqiumAgenda
+class Coordination
+class CoordinationEpisode
+class CoordinationDonor
+class TaskGroup
+class Task
+class Information
+class InformationRead
+class Favorite
+
+' P1 - Access control
+User -[#1f4e79]-> Role : P1
+Role -[#1f4e79]-> Permission : P1
+
+' P2 - Patient baseline and episode context
+Patient -[#2e7d32]-> Episode : P2
+Episode -[#2e7d32]-> MedicalValue : P2
+
+' P3 - Kolloquium workflow
+Episode -[#7b1fa2]-> ColloqiumAgenda : P3
+Colloqium -[#7b1fa2]-> ColloqiumAgenda : P3
+ColloqiumAgenda -[#7b1fa2]-> TaskGroup : P3
+TaskGroup -[#7b1fa2]-> Task : P3
+
+' P4 - TPLK coordination workflow
+Coordination -[#ef6c00]-> CoordinationDonor : P4
+Coordination -[#ef6c00]-> CoordinationEpisode : P4
+CoordinationEpisode -[#ef6c00]-> Episode : P4
+Coordination -[#ef6c00]-> TaskGroup : P4
+TaskGroup -[#ef6c00]-> Task : P4
+
+' P5 - Information visibility
+User -[#c62828]-> Information : P5 authored by
+Information -[#c62828]-> InformationRead : P5
+InformationRead -[#c62828]-> User : P5 read state
+
+' P6 - Favorites
+User -[#546e7a]-> Favorite : P6
+Favorite -[#546e7a]-> Patient : P6 example target
+
+@enduml

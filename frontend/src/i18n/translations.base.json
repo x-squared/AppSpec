@@ -1,0 +1,704 @@
+{
+  "actions": {
+    "cancel": {
+      "label": {
+        "de": "Aktion: Abbrechen",
+        "en": "Generic action: cancel"
+      },
+      "text": {
+        "de": "Abbrechen",
+        "en": "Cancel"
+      }
+    },
+    "close": {
+      "label": {
+        "de": "Aktion: Schliessen",
+        "en": "Generic action: close"
+      },
+      "text": {
+        "de": "Schliessen",
+        "en": "Close"
+      }
+    },
+    "confirm": {
+      "label": {
+        "de": "Aktion: Bestätigen",
+        "en": "Generic action: confirm"
+      },
+      "text": {
+        "de": "Bestätigen",
+        "en": "Confirm"
+      }
+    },
+    "delete": {
+      "label": {
+        "de": "Aktion: Löschen",
+        "en": "Generic action: delete"
+      },
+      "text": {
+        "de": "Löschen",
+        "en": "Delete"
+      }
+    },
+    "edit": {
+      "label": {
+        "de": "Aktion: Bearbeiten",
+        "en": "Generic action: edit"
+      },
+      "text": {
+        "de": "Bearbeiten",
+        "en": "Edit"
+      }
+    },
+    "remove": {
+      "label": {
+        "de": "Aktion: Entfernen",
+        "en": "Generic action: remove"
+      },
+      "text": {
+        "de": "Entfernen",
+        "en": "Remove"
+      }
+    },
+    "save": {
+      "label": {
+        "de": "Aktion: Speichern",
+        "en": "Generic action: save"
+      },
+      "text": {
+        "de": "Speichern",
+        "en": "Save"
+      }
+    }
+  },
+  "app": {
+    "admin": {
+      "tabs": {
+        "accessRules": {
+          "label": {
+            "de": "Admin Tab: Zugriffsregeln",
+            "en": "Admin tab name: Access Rules"
+          },
+          "text": {
+            "de": "Zugriffsregeln",
+            "en": "Access Rules"
+          }
+        },
+        "catalogues": {
+          "label": {
+            "de": "Admin Tab: Kataloge",
+            "en": "Admin tab name: Catalogues"
+          },
+          "text": {
+            "de": "Kataloge",
+            "en": "Catalogues"
+          }
+        },
+        "overview": {
+          "label": {
+            "de": "Admin Tab: Uebersicht",
+            "en": "Admin tab name: Overview"
+          },
+          "text": {
+            "de": "Uebersicht",
+            "en": "Overview"
+          }
+        },
+        "peopleTeams": {
+          "label": {
+            "de": "Admin Tab: Personen und Teams",
+            "en": "Admin tab name: People and Teams"
+          },
+          "text": {
+            "de": "Personen und Teams",
+            "en": "People & Teams"
+          }
+        },
+        "protocolConfig": {
+          "label": {
+            "de": "Admin Tab: Protokollkonfiguration",
+            "en": "Admin tab name: Protocol Config"
+          },
+          "text": {
+            "de": "Protokollkonfiguration",
+            "en": "Protocol Config"
+          }
+        },
+        "scheduler": {
+          "label": {
+            "de": "Admin Tab: Scheduler",
+            "en": "Admin tab name: Scheduler"
+          },
+          "text": {
+            "de": "Scheduler",
+            "en": "Scheduler"
+          }
+        },
+        "taskTemplates": {
+          "label": {
+            "de": "Admin Tab: Aufgabenvorlagen",
+            "en": "Admin tab name: Task Templates"
+          },
+          "text": {
+            "de": "Aufgabenvorlagen",
+            "en": "Task Templates"
+          }
+        },
+        "translations": {
+          "label": {
+            "de": "Admin Tab: Uebersetzungen",
+            "en": "Admin tab name: Translations"
+          },
+          "text": {
+            "de": "Uebersetzungen",
+            "en": "Translations"
+          }
+        }
+      },
+      "title": {
+        "label": {
+          "de": "Titel Adminseite",
+          "en": "Admin page title"
+        },
+        "text": {
+          "de": "Admin",
+          "en": "Admin"
+        }
+      }
+    },
+    "login": {
+      "loading": {
+        "label": {
+          "de": "Login Ladehinweis",
+          "en": "Login loading text"
+        },
+        "text": {
+          "de": "Laden..."
+        }
+      },
+      "placeholder": {
+        "extId": {
+          "label": {
+            "de": "Login Platzhalter Benutzer-ID",
+            "en": "Login external user id placeholder"
+          },
+          "text": {
+            "de": "Benutzer-ID eingeben (z. B. TKOORD)"
+          }
+        }
+      },
+      "submit": {
+        "label": {
+          "de": "Login Absenden",
+          "en": "Login submit button"
+        },
+        "text": {
+          "de": "Anmelden"
+        }
+      },
+      "subtitle": {
+        "label": {
+          "de": "Login Untertitel",
+          "en": "Login subtitle"
+        },
+        "text": {
+          "de": "Bitte anmelden, um fortzufahren"
+        }
+      }
+    },
+    "preferences": {
+      "actions": {
+        "save": {
+          "label": {
+            "de": "Einstellungen Aktion: Speichern",
+            "en": "Preferences action button: Save Preferences"
+          },
+          "text": {
+            "de": "Einstellungen speichern"
+          }
+        },
+        "saving": {
+          "label": {
+            "de": "Einstellungen Aktion: Speichern läuft",
+            "en": "Preferences action button: Saving"
+          },
+          "text": {
+            "de": "Speichern..."
+          }
+        }
+      },
+      "fields": {
+        "language": {
+          "label": {
+            "de": "Einstellungen Feld: Sprache",
+            "en": "Preferences field label: Language"
+          },
+          "text": {
+            "de": "Sprache"
+          }
+        },
+        "languageDe": {
+          "label": {
+            "de": "Sprache Option: Deutsch",
+            "en": "Preferences language option: German"
+          },
+          "text": {
+            "de": "Deutsch"
+          }
+        },
+        "languageEn": {
+          "label": {
+            "de": "Sprache Option: Englisch",
+            "en": "Preferences language option: English"
+          },
+          "text": {
+            "de": "Englisch"
+          }
+        },
+        "startView": {
+          "label": {
+            "de": "Einstellungen Feld: Startansicht",
+            "en": "Preferences field label: Start View"
+          },
+          "text": {
+            "de": "Startansicht"
+          }
+        }
+      },
+      "sections": {
+        "actions": {
+          "label": {
+            "de": "Einstellungen Abschnitt: Aktionen",
+            "en": "Preferences section heading: Actions"
+          },
+          "text": {
+            "de": "Aktionen"
+          }
+        },
+        "general": {
+          "label": {
+            "de": "Einstellungen Abschnitt: Allgemein",
+            "en": "Preferences section heading: General"
+          },
+          "text": {
+            "de": "Allgemein"
+          }
+        }
+      },
+      "title": {
+        "label": {
+          "de": "Titel Einstellungsseite",
+          "en": "Preferences page title"
+        },
+        "text": {
+          "de": "Benutzereinstellungen"
+        }
+      }
+    },
+    "title": {
+      "label": {
+        "de": "Applikationstitel",
+        "en": "Application title"
+      },
+      "text": {
+        "de": "TPL App",
+        "en": "TPL App"
+      }
+    },
+    "views": {
+      "admin": {
+        "label": {
+          "de": "Ansichtsname: Admin",
+          "en": "View name: Admin"
+        },
+        "text": {
+          "de": "Admin",
+          "en": "Admin"
+        }
+      },
+      "colloquiums": {
+        "label": {
+          "de": "Ansichtsname: Kolloquien",
+          "en": "View name: Colloquiums"
+        },
+        "text": {
+          "de": "Kolloquien"
+        }
+      },
+      "coordinations": {
+        "label": {
+          "de": "Ansichtsname: Koordinationen",
+          "en": "View name: Coordinations"
+        },
+        "text": {
+          "de": "Koordinationen"
+        }
+      },
+      "donors": {
+        "label": {
+          "de": "Ansichtsname: Spender",
+          "en": "View name: Donors"
+        },
+        "text": {
+          "de": "Spender"
+        }
+      },
+      "e2eTests": {
+        "label": {
+          "de": "Ansichtsname: E2E-Tests",
+          "en": "View name: E2E Tests"
+        },
+        "text": {
+          "de": "E2E-Tests"
+        }
+      },
+      "myWork": {
+        "label": {
+          "de": "Ansichtsname: Meine Arbeit",
+          "en": "View name: My Work"
+        },
+        "text": {
+          "de": "Meine Arbeit"
+        }
+      },
+      "patients": {
+        "label": {
+          "de": "Ansichtsname: Empfänger",
+          "en": "View name: Recipients"
+        },
+        "text": {
+          "de": "Empfänger"
+        }
+      },
+      "preferences": {
+        "label": {
+          "de": "Ansichtsname: Benutzereinstellungen",
+          "en": "View name: User Preferences"
+        },
+        "text": {
+          "de": "Benutzereinstellungen"
+        }
+      },
+      "reports": {
+        "label": {
+          "de": "Ansichtsname: Berichte",
+          "en": "View name: Reports"
+        },
+        "text": {
+          "de": "Berichte"
+        }
+      }
+    }
+  },
+  "common": {
+    "backToList": {
+      "label": {
+        "de": "Allgemein Zurück zur Liste Aktion",
+        "en": "Generic back to list action"
+      },
+      "text": {
+        "de": "Zurück zur Liste",
+        "en": "Back to list"
+      }
+    },
+    "delete": {
+      "confirmPrompt": {
+        "label": {
+          "de": "Löschen Bestätigung",
+          "en": "Delete confirmation prompt"
+        },
+        "text": {
+          "de": "Löschen?",
+          "en": "Delete?"
+        }
+      },
+      "no": {
+        "label": {
+          "de": "Löschen Nein",
+          "en": "Delete confirmation no"
+        },
+        "text": {
+          "de": "Nein",
+          "en": "No"
+        }
+      },
+      "yes": {
+        "label": {
+          "de": "Löschen Ja",
+          "en": "Delete confirmation yes"
+        },
+        "text": {
+          "de": "Ja",
+          "en": "Yes"
+        }
+      }
+    },
+    "emptySymbol": {
+      "label": {
+        "de": "Allgemein Leersymbol",
+        "en": "Generic empty symbol"
+      },
+      "text": {
+        "de": "–",
+        "en": "–"
+      }
+    },
+    "loading": {
+      "label": {
+        "de": "Allgemeiner Ladehinweis",
+        "en": "Common loading text"
+      },
+      "text": {
+        "de": "Laden...",
+        "en": "Loading..."
+      }
+    },
+    "no": {
+      "label": {
+        "de": "Allgemein Nein",
+        "en": "Generic no"
+      },
+      "text": {
+        "de": "Nein",
+        "en": "No"
+      }
+    },
+    "yes": {
+      "label": {
+        "de": "Allgemein Ja",
+        "en": "Generic yes"
+      },
+      "text": {
+        "de": "Ja",
+        "en": "Yes"
+      }
+    }
+  },
+  "navigation": {
+    "dev": {
+      "devForum": {
+        "label": {
+          "de": "Navigationseintrag: Dev-Forum",
+          "en": "Navigation item: Dev-Forum"
+        },
+        "text": {
+          "de": "Dev-Forum",
+          "en": "Dev-Forum"
+        }
+      },
+      "e2eTests": {
+        "label": {
+          "de": "Navigationseintrag: E2E-Tests",
+          "en": "Navigation item: E2E tests"
+        },
+        "text": {
+          "de": "E2E-Tests",
+          "en": "E2E Tests"
+        }
+      }
+    }
+  },
+  "sidebar": {
+    "actions": {
+      "collapse": {
+        "label": {
+          "de": "Seitenleiste Aktion Einklappen",
+          "en": "Sidebar action collapse"
+        },
+        "text": {
+          "de": "Einklappen",
+          "en": "Collapse"
+        }
+      },
+      "createCoordinationNow": {
+        "label": {
+          "de": "Seitenleiste Aktion Koordination jetzt erstellen",
+          "en": "Sidebar action create coordination now"
+        },
+        "text": {
+          "de": "Koordination jetzt erstellen",
+          "en": "Create coordination now"
+        }
+      },
+      "expand": {
+        "label": {
+          "de": "Seitenleiste Aktion Ausklappen",
+          "en": "Sidebar action expand"
+        },
+        "text": {
+          "de": "Ausklappen",
+          "en": "Expand"
+        }
+      }
+    },
+    "brand": {
+      "label": {
+        "de": "Seitenleiste Marke",
+        "en": "Sidebar brand"
+      },
+      "text": {
+        "de": "TPL App",
+        "en": "TPL App"
+      }
+    },
+    "history": {
+      "back": {
+        "label": {
+          "de": "Seitenleiste Verlauf Aktion Zurück",
+          "en": "Sidebar history action back"
+        },
+        "text": {
+          "de": "Zurück",
+          "en": "Go back"
+        }
+      },
+      "forward": {
+        "label": {
+          "de": "Seitenleiste Verlauf Aktion Vorwärts",
+          "en": "Sidebar history action forward"
+        },
+        "text": {
+          "de": "Vorwärts",
+          "en": "Go forward"
+        }
+      },
+      "label": {
+        "label": {
+          "de": "Seitenleiste Navigationsverlauf Aria-Label",
+          "en": "Sidebar navigation history aria label"
+        },
+        "text": {
+          "de": "Navigationsverlauf",
+          "en": "Navigation history"
+        }
+      },
+      "markCurrentLocation": {
+        "label": {
+          "de": "Seitenleiste Verlauf Aktion Aktülle Position markieren",
+          "en": "Sidebar history action mark current location"
+        },
+        "text": {
+          "de": "Aktülle Position markieren",
+          "en": "Mark current location"
+        }
+      },
+      "returnToMarkedLocation": {
+        "label": {
+          "de": "Seitenleiste Verlauf Aktion Zur markierten Position",
+          "en": "Sidebar history action return to marked location"
+        },
+        "text": {
+          "de": "Zur markierten Position",
+          "en": "Return to marked location"
+        }
+      }
+    },
+    "nav": {
+      "admin": {
+        "label": {
+          "de": "Seitenleiste Navigation: Admin",
+          "en": "Sidebar navigation item: Admin"
+        },
+        "text": {
+          "de": "Admin"
+        }
+      },
+      "colloquiums": {
+        "label": {
+          "de": "Seitenleiste Navigation: Kolloquien",
+          "en": "Sidebar navigation item: Colloquiums"
+        },
+        "text": {
+          "de": "Kolloquien"
+        }
+      },
+      "coordinations": {
+        "label": {
+          "de": "Seitenleiste Navigation: Koordinationen",
+          "en": "Sidebar navigation item: Coordinations"
+        },
+        "text": {
+          "de": "Koordinationen"
+        }
+      },
+      "donors": {
+        "label": {
+          "de": "Seitenleiste Navigation: Spender",
+          "en": "Sidebar navigation item: Donors"
+        },
+        "text": {
+          "de": "Spender"
+        }
+      },
+      "myWork": {
+        "label": {
+          "de": "Seitenleiste Navigation: Meine Arbeit",
+          "en": "Sidebar navigation item: My Work"
+        },
+        "text": {
+          "de": "Meine Arbeit"
+        }
+      },
+      "recipients": {
+        "label": {
+          "de": "Seitenleiste Navigation: Empfänger",
+          "en": "Sidebar navigation item: Recipients"
+        },
+        "text": {
+          "de": "Empfänger"
+        }
+      },
+      "reports": {
+        "label": {
+          "de": "Seitenleiste Navigation: Berichte",
+          "en": "Sidebar navigation item: Reports"
+        },
+        "text": {
+          "de": "Berichte"
+        }
+      }
+    },
+    "sections": {
+      "admin": {
+        "label": {
+          "de": "Seitenleiste Abschnitt Admin",
+          "en": "Sidebar section label admin"
+        },
+        "text": {
+          "de": "ADMIN",
+          "en": "ADMIN"
+        }
+      },
+      "dev": {
+        "label": {
+          "de": "Seitenleiste Abschnitt Dev",
+          "en": "Sidebar section label dev"
+        },
+        "text": {
+          "de": "DEV",
+          "en": "DEV"
+        }
+      }
+    },
+    "user": {
+      "logout": {
+        "label": {
+          "de": "Benutzermenü Aktion: Abmelden",
+          "en": "Sidebar user menu action: logout"
+        },
+        "text": {
+          "de": "Abmelden"
+        }
+      },
+      "preferences": {
+        "label": {
+          "de": "Benutzermenü Aktion: Einstellungen",
+          "en": "Sidebar user menu action: preferences"
+        },
+        "text": {
+          "de": "Einstellungen"
+        }
+      }
+    }
+  }
+}

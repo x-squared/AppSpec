@@ -1,0 +1,748 @@
+{
+  "devForum": {
+    "actions": {
+      "collapseTicket": {
+        "label": {
+          "de": "Dev-Forum Aktion Ticketdetails einklappen",
+          "en": "Dev-Forum action collapse ticket details"
+        },
+        "text": {
+          "de": "Ticket einklappen",
+          "en": "Collapse ticket"
+        }
+      },
+      "openContext": {
+        "label": {
+          "de": "Dev-Forum Aktion Kontext öffnen",
+          "en": "Dev-Forum action open captured context"
+        },
+        "text": {
+          "de": "Kontext öffnen",
+          "en": "Open context"
+        }
+      },
+      "openPreviousTicket": {
+        "label": {
+          "de": "Dev-Forum Aktion vorheriges Ticket öffnen",
+          "en": "Dev-Forum action open previous ticket"
+        },
+        "text": {
+          "de": "Vorheriges Ticket öffnen",
+          "en": "Open previous ticket"
+        }
+      },
+      "refresh": {
+        "label": {
+          "de": "Dev-Forum Aktion Aktualisieren",
+          "en": "Dev-Forum action refresh"
+        },
+        "text": {
+          "de": "Aktualisieren",
+          "en": "Refresh"
+        }
+      },
+      "showTicket": {
+        "label": {
+          "de": "Dev-Forum Aktion Ticketdetails anzeigen",
+          "en": "Dev-Forum action show ticket details"
+        },
+        "text": {
+          "de": "Ticket anzeigen",
+          "en": "Show ticket"
+        }
+      }
+    },
+    "capture": {
+      "cancel": {
+        "label": {
+          "de": "Dev-Forum Erfassung Abbrechen Aktion",
+          "en": "Dev-Forum capture cancel action"
+        },
+        "text": {
+          "de": "Abbrechen",
+          "en": "Cancel"
+        }
+      },
+      "captureContext": {
+        "label": {
+          "de": "Dev-Forum Ticket öffnen Aktion",
+          "en": "Dev-Forum open ticket action"
+        },
+        "text": {
+          "de": "Ticket öffnen",
+          "en": "Open ticket"
+        }
+      },
+      "capturedMeta": {
+        "label": {
+          "de": "Dev-Forum Erfassungsmetadaten",
+          "en": "Dev-Forum capture metadata label"
+        },
+        "text": {
+          "de": "Erfasster Kontext",
+          "en": "Captured context"
+        }
+      },
+      "hint": {
+        "label": {
+          "de": "Dev-Forum Erfassungshinweis",
+          "en": "Dev-Forum capture hint text"
+        },
+        "text": {
+          "de": "Erfassen Sie zuerst den Kontext und schreiben Sie dann Ihre Anfrage.",
+          "en": "Capture context first, then write your request."
+        }
+      },
+      "pickComponent": {
+        "label": {
+          "de": "Dev-Forum Komponente auswählen Aktion",
+          "en": "Dev-Forum pick component action"
+        },
+        "text": {
+          "de": "Komponente auswählen",
+          "en": "Pick component"
+        }
+      },
+      "pickHint": {
+        "label": {
+          "de": "Dev-Forum Hinweis zur Komponentenauswahl",
+          "en": "Dev-Forum component picking hint"
+        },
+        "text": {
+          "de": "Bewegen Sie die Maus über die App und drücken Sie Enter, um die markierte Komponente zu speichern. Esc bricht ab.",
+          "en": "Move mouse over the app and press Enter to store the highlighted component. Esc cancels."
+        }
+      },
+      "pickedComponent": {
+        "label": {
+          "de": "Dev-Forum Label ausgewählte Komponente",
+          "en": "Dev-Forum selected component label"
+        },
+        "text": {
+          "de": "Ausgewählte Komponente",
+          "en": "Selected component"
+        }
+      },
+      "requestEditorAria": {
+        "label": {
+          "de": "Dev-Forum Erfassungseditor Aria",
+          "en": "Dev-Forum capture request editor aria"
+        },
+        "text": {
+          "de": "Anfrageeditor",
+          "en": "Request editor"
+        }
+      },
+      "submit": {
+        "label": {
+          "de": "Dev-Forum Aktion Anfrage senden",
+          "en": "Dev-Forum submit request action"
+        },
+        "text": {
+          "de": "Anfrage senden",
+          "en": "Send request"
+        }
+      }
+    },
+    "development": {
+      "acceptImplemented": {
+        "label": {
+          "de": "Dev-Forum Akzeptiert und umgesetzt Aktion",
+          "en": "Dev-Forum accept and implemented action"
+        },
+        "text": {
+          "de": "Akzeptiert und umgesetzt",
+          "en": "Accepted and implemented"
+        }
+      },
+      "claim": {
+        "label": {
+          "de": "Dev-Forum Übernehmen Aktion",
+          "en": "Dev-Forum claim action"
+        },
+        "text": {
+          "de": "Übernehmen",
+          "en": "Claim"
+        }
+      },
+      "contextToggle": {
+        "label": {
+          "de": "Dev-Forum Entwicklung Kontext Umschalter",
+          "en": "Dev-Forum development context toggle label"
+        },
+        "text": {
+          "de": "Kontextinformationen anzeigen",
+          "en": "Show context information"
+        }
+      },
+      "copyForCursor": {
+        "label": {
+          "de": "Dev-Forum Notiz für Cursor kopieren Aktion",
+          "en": "Dev-Forum copy note for Cursor action"
+        },
+        "text": {
+          "de": "Prompt für Cursor kopieren",
+          "en": "Copy prompt for Cursor"
+        }
+      },
+      "copyRequest": {
+        "label": {
+          "de": "Dev-Forum Anfrage kopieren Aktion",
+          "en": "Dev-Forum copy request action"
+        },
+        "text": {
+          "de": "Anfrage kopieren",
+          "en": "Copy request"
+        }
+      },
+      "empty": {
+        "label": {
+          "de": "Dev-Forum Entwicklung Leerzustand",
+          "en": "Dev-Forum development empty state"
+        },
+        "text": {
+          "de": "Aktuell keine offenen Anfragen.",
+          "en": "No pending requests right now."
+        }
+      },
+      "filterAll": {
+        "label": {
+          "de": "Dev-Forum Entwicklungsfilter Alle",
+          "en": "Dev-Forum development filter all option"
+        },
+        "text": {
+          "de": "Alle Entwickler",
+          "en": "All developers"
+        }
+      },
+      "filterDeveloper": {
+        "label": {
+          "de": "Dev-Forum Entwicklungsfilter",
+          "en": "Dev-Forum development filter label"
+        },
+        "text": {
+          "de": "Nach Entwickler filtern",
+          "en": "Filter by developer"
+        }
+      },
+      "notes": {
+        "label": {
+          "de": "Dev-Forum Entwicklernotizen Überschrift",
+          "en": "Dev-Forum developer notes heading"
+        },
+        "text": {
+          "de": "Prompt",
+          "en": "Prompt"
+        }
+      },
+      "notesEditorAria": {
+        "label": {
+          "de": "Dev-Forum Notizeneditor Aria",
+          "en": "Dev-Forum notes editor aria"
+        },
+        "text": {
+          "de": "Prompt-Editor",
+          "en": "Prompt editor"
+        }
+      },
+      "reject": {
+        "label": {
+          "de": "Dev-Forum Ablehnen Entscheidung",
+          "en": "Dev-Forum reject decision action"
+        },
+        "text": {
+          "de": "Abgelehnt",
+          "en": "Rejected"
+        }
+      },
+      "response": {
+        "label": {
+          "de": "Dev-Forum Antwort Überschrift",
+          "en": "Dev-Forum response heading"
+        },
+        "text": {
+          "de": "Antwort an Nutzer",
+          "en": "Reply to user"
+        }
+      },
+      "responseEditorAria": {
+        "label": {
+          "de": "Dev-Forum Antworteditor Aria",
+          "en": "Dev-Forum response editor aria"
+        },
+        "text": {
+          "de": "Antworteditor der Entwicklung",
+          "en": "Developer response editor"
+        }
+      }
+    },
+    "editor": {
+      "bold": {
+        "label": {
+          "de": "Dev-Forum Editor Aktion Fett",
+          "en": "Dev-Forum editor bold action"
+        },
+        "text": {
+          "de": "Fett",
+          "en": "Bold"
+        }
+      },
+      "italic": {
+        "label": {
+          "de": "Dev-Forum Editor Aktion Kursiv",
+          "en": "Dev-Forum editor italic action"
+        },
+        "text": {
+          "de": "Kursiv",
+          "en": "Italic"
+        }
+      },
+      "underline": {
+        "label": {
+          "de": "Dev-Forum Editor Aktion Unterstreichen",
+          "en": "Dev-Forum editor underline action"
+        },
+        "text": {
+          "de": "Unterstreichen",
+          "en": "Underline"
+        }
+      }
+    },
+    "errors": {
+      "captureFailed": {
+        "label": {
+          "de": "Dev-Forum Erfassungsfehler",
+          "en": "Dev-Forum capture error"
+        },
+        "text": {
+          "de": "Anfrage konnte nicht gespeichert werden.",
+          "en": "Could not save request."
+        }
+      },
+      "claimFailed": {
+        "label": {
+          "de": "Dev-Forum Claim-Fehler",
+          "en": "Dev-Forum claim error"
+        },
+        "text": {
+          "de": "Anfrage konnte nicht übernommen werden.",
+          "en": "Could not claim request."
+        }
+      },
+      "copyFailed": {
+        "label": {
+          "de": "Dev-Forum Zwischenablage-Kopierfehler",
+          "en": "Dev-Forum clipboard copy error"
+        },
+        "text": {
+          "de": "Text konnte nicht in die Zwischenablage kopiert werden.",
+          "en": "Could not copy text to clipboard."
+        }
+      },
+      "decisionFailed": {
+        "label": {
+          "de": "Dev-Forum Entscheidungsfehler",
+          "en": "Dev-Forum decision error"
+        },
+        "text": {
+          "de": "Entscheidung konnte nicht gespeichert werden.",
+          "en": "Could not save decision."
+        }
+      },
+      "loadFailed": {
+        "label": {
+          "de": "Dev-Forum Ladefehler",
+          "en": "Dev-Forum load error"
+        },
+        "text": {
+          "de": "Dev-Forum-Daten konnten nicht geladen werden.",
+          "en": "Could not load Dev-Forum data."
+        }
+      },
+      "reviewAcceptFailed": {
+        "label": {
+          "de": "Dev-Forum Review-Akzeptanzfehler",
+          "en": "Dev-Forum review accept error"
+        },
+        "text": {
+          "de": "Review-Ergebnis konnte nicht akzeptiert werden.",
+          "en": "Could not accept review result."
+        }
+      },
+      "reviewRejectFailed": {
+        "label": {
+          "de": "Dev-Forum Review-Ablehnungsfehler",
+          "en": "Dev-Forum review reject error"
+        },
+        "text": {
+          "de": "Anfrage konnte nicht erneut geöffnet werden.",
+          "en": "Could not reopen request."
+        }
+      }
+    },
+    "panel": {
+      "hide": {
+        "label": {
+          "de": "Aktion zum Ausblenden des Dev-Forum-Panels",
+          "en": "Action to hide Dev-Forum panel"
+        },
+        "text": {
+          "de": "Dev-Forum-Panel ausblenden",
+          "en": "Hide Dev-Forum panel"
+        }
+      },
+      "show": {
+        "label": {
+          "de": "Aktion zum Anzeigen des Dev-Forum-Panels",
+          "en": "Action to show Dev-Forum panel"
+        },
+        "text": {
+          "de": "Dev-Forum-Panel anzeigen",
+          "en": "Show Dev-Forum panel"
+        }
+      },
+      "title": {
+        "label": {
+          "de": "Dev-Forum Paneltitel",
+          "en": "Dev-Forum panel title"
+        },
+        "text": {
+          "de": "Dev-Forum",
+          "en": "Dev-Forum"
+        }
+      }
+    },
+    "readOnlyDialog": {
+      "changedAt": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Geändert-am Label",
+          "en": "Dev-Forum read-only dialog changed at label"
+        },
+        "text": {
+          "de": "Geändert am",
+          "en": "Changed at"
+        }
+      },
+      "close": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Schließen Aktion",
+          "en": "Dev-Forum read-only dialog close action"
+        },
+        "text": {
+          "de": "Schließen",
+          "en": "Close"
+        }
+      },
+      "closedAt": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Geschlossen-am Label",
+          "en": "Dev-Forum read-only dialog closed at label"
+        },
+        "text": {
+          "de": "Geschlossen am",
+          "en": "Closed at"
+        }
+      },
+      "createdAt": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Erstellt-am Label",
+          "en": "Dev-Forum read-only dialog created at label"
+        },
+        "text": {
+          "de": "Erstellt am",
+          "en": "Created at"
+        }
+      },
+      "decision": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Entscheidung Label",
+          "en": "Dev-Forum read-only dialog decision label"
+        },
+        "text": {
+          "de": "Entscheidung",
+          "en": "Decision"
+        }
+      },
+      "developerNoteTitle": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Prompt Titel",
+          "en": "Dev-Forum read-only dialog developer note title"
+        },
+        "text": {
+          "de": "Prompt",
+          "en": "Prompt"
+        }
+      },
+      "historyTitle": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Verlaufstitel",
+          "en": "Dev-Forum read-only dialog history title"
+        },
+        "text": {
+          "de": "Ticket-Linie",
+          "en": "Ticket line"
+        }
+      },
+      "metaTitle": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Metadaten Titel",
+          "en": "Dev-Forum read-only dialog metadata title"
+        },
+        "text": {
+          "de": "Ticket-Details",
+          "en": "Ticket details"
+        }
+      },
+      "next": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Nächste Aktion",
+          "en": "Dev-Forum read-only dialog next action"
+        },
+        "text": {
+          "de": "Nächste",
+          "en": "Next"
+        }
+      },
+      "parentTicket": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Ursprungsticket Label",
+          "en": "Dev-Forum read-only dialog parent ticket label"
+        },
+        "text": {
+          "de": "Ursprungsticket",
+          "en": "Parent ticket"
+        }
+      },
+      "position": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Positionshinweis",
+          "en": "Dev-Forum read-only dialog position text"
+        },
+        "text": {
+          "de": "Ticket {current} von {total}",
+          "en": "Ticket {current} of {total}"
+        }
+      },
+      "previous": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Vorherige Aktion",
+          "en": "Dev-Forum read-only dialog previous action"
+        },
+        "text": {
+          "de": "Vorherige",
+          "en": "Previous"
+        }
+      },
+      "requestTextTitle": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Anfrage Abschnittstitel",
+          "en": "Dev-Forum read-only dialog request text section title"
+        },
+        "text": {
+          "de": "Anfrage",
+          "en": "Request"
+        }
+      },
+      "title": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Titel",
+          "en": "Dev-Forum read-only dialog title"
+        },
+        "text": {
+          "de": "Vorheriges Ticket",
+          "en": "Previous ticket"
+        }
+      },
+      "userReviewTitle": {
+        "label": {
+          "de": "Dev-Forum Nur-Lesen Dialog Nutzerreview Titel",
+          "en": "Dev-Forum read-only dialog user review title"
+        },
+        "text": {
+          "de": "Nutzerreview",
+          "en": "User review"
+        }
+      }
+    },
+    "request": {
+      "claimedBy": {
+        "label": {
+          "de": "Dev-Forum Übernommen von",
+          "en": "Dev-Forum claimed by label"
+        },
+        "text": {
+          "de": "Übernommen von",
+          "en": "Claimed by"
+        }
+      },
+      "guiPart": {
+        "label": {
+          "de": "Dev-Forum GUI-Bereich",
+          "en": "Dev-Forum GUI part label"
+        },
+        "text": {
+          "de": "GUI-Bereich",
+          "en": "GUI part"
+        }
+      },
+      "status": {
+        "label": {
+          "de": "Dev-Forum Anfrage-Status",
+          "en": "Dev-Forum request status label"
+        },
+        "text": {
+          "de": "Status",
+          "en": "Status"
+        }
+      },
+      "submitter": {
+        "label": {
+          "de": "Dev-Forum Einreicher",
+          "en": "Dev-Forum submitter label"
+        },
+        "text": {
+          "de": "Einreicher",
+          "en": "Submitter"
+        }
+      },
+      "summaryFallback": {
+        "label": {
+          "de": "Dev-Forum Anfrage Zusammenfassung Fallback",
+          "en": "Dev-Forum request summary fallback"
+        },
+        "text": {
+          "de": "Kein Anfragetext.",
+          "en": "No request text."
+        }
+      },
+      "title": {
+        "label": {
+          "de": "Dev-Forum Anfragetitel",
+          "en": "Dev-Forum request title"
+        },
+        "text": {
+          "de": "Anfrage",
+          "en": "Request"
+        }
+      }
+    },
+    "review": {
+      "accept": {
+        "label": {
+          "de": "Dev-Forum Review Akzeptieren",
+          "en": "Dev-Forum review accept action"
+        },
+        "text": {
+          "de": "Akzeptieren",
+          "en": "Accept"
+        }
+      },
+      "developerReply": {
+        "label": {
+          "de": "Dev-Forum Entwicklerantwort Überschrift",
+          "en": "Dev-Forum developer reply heading"
+        },
+        "text": {
+          "de": "Antwort der Entwicklung",
+          "en": "Developer reply"
+        }
+      },
+      "empty": {
+        "label": {
+          "de": "Dev-Forum Review Leerzustand",
+          "en": "Dev-Forum review empty state"
+        },
+        "text": {
+          "de": "Aktuell keine Review-Einträge.",
+          "en": "No review items right now."
+        }
+      },
+      "notAccepted": {
+        "label": {
+          "de": "Dev-Forum Review Nicht akzeptiert Überschrift",
+          "en": "Dev-Forum review not accepted heading"
+        },
+        "text": {
+          "de": "Nicht akzeptiert",
+          "en": "Not accepted"
+        }
+      },
+      "rejectEditorAria": {
+        "label": {
+          "de": "Dev-Forum Review-Ablehnungseditor Aria",
+          "en": "Dev-Forum review reject editor aria"
+        },
+        "text": {
+          "de": "Review-Ablehnungseditor",
+          "en": "Review reject editor"
+        }
+      },
+      "sendRejection": {
+        "label": {
+          "de": "Dev-Forum Ablehnung senden Aktion",
+          "en": "Dev-Forum send rejection action"
+        },
+        "text": {
+          "de": "Ablehnung senden und neu öffnen",
+          "en": "Send rejection and reopen"
+        }
+      }
+    },
+    "status": {
+      "loading": {
+        "label": {
+          "de": "Dev-Forum Ladestatus",
+          "en": "Dev-Forum loading status"
+        },
+        "text": {
+          "de": "Dev-Forum wird geladen...",
+          "en": "Loading Dev-Forum..."
+        }
+      }
+    },
+    "tabs": {
+      "capturing": {
+        "label": {
+          "de": "Dev-Forum Tab Erfassen",
+          "en": "Dev-Forum tab capturing"
+        },
+        "text": {
+          "de": "Erfassen",
+          "en": "Capturing"
+        }
+      },
+      "development": {
+        "label": {
+          "de": "Dev-Forum Tab Entwicklung",
+          "en": "Dev-Forum tab development"
+        },
+        "text": {
+          "de": "Entwicklung",
+          "en": "Development"
+        }
+      },
+      "review": {
+        "label": {
+          "de": "Dev-Forum Tab Review",
+          "en": "Dev-Forum tab review"
+        },
+        "text": {
+          "de": "Review",
+          "en": "Review"
+        }
+      }
+    },
+    "view": {
+      "title": {
+        "label": {
+          "de": "Dev-Forum Ansichtstitel",
+          "en": "Dev-Forum view title"
+        },
+        "text": {
+          "de": "Dev-Forum",
+          "en": "Dev-Forum"
+        }
+      }
+    }
+  }
+}

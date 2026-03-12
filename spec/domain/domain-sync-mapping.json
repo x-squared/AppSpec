@@ -1,0 +1,45 @@
+{
+  "__comment": "This file intentionally stores only checker overrides and guardrails (aliases, ignored conceptual edges, tracked model entities). Conceptual relations come from spec/domain/gen-domain.puml and are compared against SQLAlchemy relationships at runtime.",
+  "entity_aliases": {
+    "Role": "Code",
+    "Permission": "AccessPermission",
+    "InformationRead": "InformationUser"
+  },
+  "ignored_conceptual_edges": [
+    ["ColloqiumType", "Person"],
+    ["Colloqium", "Person"]
+  ],
+  "tracked_model_entities": [
+    "User",
+    "Person",
+    "PersonTeam",
+    "Code",
+    "AccessPermission",
+    "Patient",
+    "Episode",
+    "EpisodeOrgan",
+    "ContactInfo",
+    "Absence",
+    "Diagnosis",
+    "MedicalValueTemplate",
+    "MedicalValueGroupTemplate",
+    "MedicalValueGroup",
+    "MedicalValue",
+    "ColloqiumType",
+    "Colloqium",
+    "ColloqiumAgenda",
+    "Coordination",
+    "CoordinationDonor",
+    "CoordinationEpisode",
+    "CoordinationProcurement",
+    "CoordinationTimeLog",
+    "CoordinationProtocolEventLog",
+    "TaskGroupTemplate",
+    "TaskTemplate",
+    "TaskGroup",
+    "Task",
+    "Information",
+    "InformationUser",
+    "Favorite"
+  ]
+}

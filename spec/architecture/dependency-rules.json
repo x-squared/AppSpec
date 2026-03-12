@@ -1,0 +1,82 @@
+{
+  "python_root": "backend/app",
+  "rules": [
+    {
+      "id": "ARCH-R1",
+      "description": "Routers must not import model internals directly",
+      "source_glob": "backend/app/routers/*.py",
+      "deny_module_prefixes": [
+        "app.model."
+      ],
+      "exclude_files": [
+        "backend/app/routers/__init__.py",
+        "backend/app/routers/registry.py"
+      ]
+    },
+    {
+      "id": "ARCH-R2",
+      "description": "Feature services must not import routers",
+      "source_glob": "backend/app/features/**/service.py",
+      "deny_module_prefixes": [
+        "app.routers."
+      ],
+      "exclude_files": []
+    },
+    {
+      "id": "ARCH-R3",
+      "description": "Domain model modules must not import router layer",
+      "source_glob": "backend/app/model/*.py",
+      "deny_module_prefixes": [
+        "app.routers."
+      ],
+      "exclude_files": [
+        "backend/app/model/__init__.py"
+      ]
+    },
+    {
+      "id": "ARCH-R4",
+      "description": "Domain model modules must not import feature-service layer",
+      "source_glob": "backend/app/model/*.py",
+      "deny_module_prefixes": [
+        "app.features."
+      ],
+      "exclude_files": [
+        "backend/app/model/__init__.py"
+      ]
+    },
+    {
+      "id": "ARCH-R5",
+      "description": "Schema modules must stay transport-contract focused and not import router layer",
+      "source_glob": "backend/app/schema/*.py",
+      "deny_module_prefixes": [
+        "app.routers."
+      ],
+      "exclude_files": [
+        "backend/app/schema/__init__.py"
+      ]
+    },
+    {
+      "id": "ARCH-R6",
+      "description": "Schema modules must not depend on feature-service orchestration",
+      "source_glob": "backend/app/schema/*.py",
+      "deny_module_prefixes": [
+        "app.features."
+      ],
+      "exclude_files": [
+        "backend/app/schema/__init__.py"
+      ]
+    },
+    {
+      "id": "ARCH-R7",
+      "description": "Runtime routers must not import seed infrastructure",
+      "source_glob": "backend/app/routers/*.py",
+      "deny_module_prefixes": [
+        "app.seed."
+      ],
+      "exclude_files": [
+        "backend/app/routers/__init__.py",
+        "backend/app/routers/registry.py"
+      ]
+    }
+  ]
+}

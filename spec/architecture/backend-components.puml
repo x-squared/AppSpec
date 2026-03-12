@@ -1,0 +1,49 @@
+@startuml
+title TPL Architecture - Backend Component Boundaries
+
+left to right direction
+skinparam shadowing false
+hide methods
+hide stereotypes
+
+package "Transport Layer" {
+  class Routers
+  class AuthDependencies
+  class SchemaContracts
+}
+
+package "Application Layer" {
+  class FeatureServices
+}
+
+package "Domain/Persistence Layer" {
+  class DomainModel
+  class Database
+}
+
+Routers --> AuthDependencies : guard/authz
+Routers --> SchemaContracts : request/response validation
+Routers --> FeatureServices : delegate workflows
+
+FeatureServices --> DomainModel : business rules + persistence orchestration
+DomainModel --> Database : ORM mapping
+
+note right of Routers
+Intent:
+- Keep routers transport-thin
+- Avoid router business orchestration
+end note
+
+note right of FeatureServices
+Intent:
+- Cross-entity workflows and invariants
+- Reusable domain operations
+end note
+
+note right of DomainModel
+Intent:
+- Persistence entities and relations
+- No router-layer dependencies
+end note
+
+@enduml

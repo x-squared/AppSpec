@@ -1,0 +1,30 @@
+@startuml
+title TPL Domain - KOLL (Kolloquien)
+
+hide methods
+hide stereotypes
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+left to right direction
+
+class Person
+class Episode
+class ColloqiumType
+class ColloqiumTypeParticipant
+class Colloqium
+class ColloqiumParticipant
+class ColloqiumAgenda
+class TaskGroup
+
+ColloqiumType "1" -- "0..*" ColloqiumTypeParticipant
+Person "1" <-- "0..*" ColloqiumTypeParticipant : default participants
+
+ColloqiumType "1" -- "0..*" Colloqium
+Colloqium "1" -- "0..*" ColloqiumParticipant
+Person "1" <-- "0..*" ColloqiumParticipant : participants
+
+Colloqium "1" -- "0..*" ColloqiumAgenda
+Episode "1" <-- "0..*" ColloqiumAgenda : references >
+TaskGroup "1" <-- "0..*" ColloqiumAgenda : optional task context
+
+@enduml

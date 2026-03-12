@@ -1,0 +1,37 @@
+@startuml CROSS_domain
+title TPL Domain - CROSS (Cross-Cutting Runtime)
+
+hide methods
+hide stereotypes
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+left to right direction
+
+class User
+class Patient
+class Episode
+class ColloqiumAgenda
+class Coordination
+class TaskGroupTemplate
+class TaskTemplate
+class TaskGroup
+class Task
+class Information
+class InformationRead
+class Favorite
+
+TaskGroupTemplate "1" -- "0..*" TaskTemplate
+TaskGroupTemplate "1" -- "0..*" TaskGroup
+TaskGroup "1" -- "0..*" Task
+Patient "1" <-- "0..*" TaskGroup : context (optional)
+Episode "1" <-- "0..*" TaskGroup : context (optional)
+ColloqiumAgenda "1" <-- "0..*" TaskGroup : context (optional)
+Coordination "1" <-- "0..*" TaskGroup : context (optional)
+User "1" <-- "0..*" Task : assigned to (optional)
+User "1" <-- "0..*" Task : closed by (optional)
+Information "1" -- "0..*" InformationRead
+User "1" <-- "0..*" InformationRead : read state
+User "1" <-- "0..*" Information : authored by
+User "1" <-- "0..*" Favorite : owner
+
+@enduml

@@ -1,0 +1,114 @@
+@startuml
+title TPL Domain - GEN (Cross-Domain Overview)
+
+hide methods
+hide stereotypes
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+left to right direction
+
+package "BASE Domain" {
+  class User
+  class Person
+  class PersonTeam
+  class Role
+  class Permission
+  class Code
+  class Catalogue
+  class AccessPermission
+  class DatatypeDefinition
+  class TranslationBundle
+  class ScheduledJob
+  class ScheduledJobRun
+}
+
+package "PAT Domain" {
+  class Patient
+  class ContactInfo
+  class Absence
+  class Diagnosis
+  class MedicalValueTemplate
+  class MedicalValueGroupTemplate
+  class MedicalValueGroup
+  class MedicalValue
+}
+
+package "TPLK Domain" {
+  class Episode
+  class EpisodeOrgan
+  class Coordination
+  class CoordinationDonor
+  class CoordinationEpisode
+  class CoordinationProcurement
+  class CoordinationTimeLog
+  class CoordinationProtocolEventLog
+}
+
+package "KOLL Domain" {
+  class ColloqiumType
+  class Colloqium
+  class ColloqiumAgenda
+}
+
+package "CROSS Domain" {
+  class TaskGroupTemplate
+  class TaskTemplate
+  class TaskGroup
+  class Task
+  class Information
+  class InformationRead
+  class Favorite
+}
+
+' Identity and access
+Person "0..1" -- "1" User : represents >
+PersonTeam "*" -- "*" Person : members
+User "*" -- "*" Role : has >
+Role "*" -- "*" Permission : grants >
+
+' Patient and values
+Patient "1" -- "0..*" ContactInfo
+Patient "1" -- "0..*" Absence
+Patient "1" -- "0..*" Diagnosis
+MedicalValueGroupTemplate "1" -- "0..*" MedicalValueTemplate
+MedicalValueGroupTemplate "1" -- "0..*" MedicalValueGroup
+Patient "1" -- "0..*" MedicalValueGroup
+Patient "1" -- "0..*" MedicalValue
+MedicalValueTemplate "1" -- "0..*" MedicalValue
+MedicalValueGroup "1" -- "0..*" MedicalValue
+
+' TPLK flow
+Patient "1" -- "0..*" Episode
+Episode "1" -- "0..*" EpisodeOrgan
+Episode "1" <-- "0..*" MedicalValue : context (optional)
+Coordination "1" -- "0..1" CoordinationDonor
+Coordination "1" -- "0..1" CoordinationProcurement
+Coordination "1" -- "0..*" CoordinationEpisode
+Episode "1" <-- "0..*" CoordinationEpisode : references >
+Coordination "1" -- "0..*" CoordinationTimeLog
+Coordination "1" -- "0..*" CoordinationProtocolEventLog
+Task "1" <-- "0..*" CoordinationProtocolEventLog : optional task reference
+
+' KOLL
+ColloqiumType "1" -- "0..*" Colloqium
+ColloqiumType "*" -- "*" Person : default participants
+Colloqium "*" -- "*" Person : participants
+Colloqium "1" -- "0..*" ColloqiumAgenda
+Episode "1" <-- "0..*" ColloqiumAgenda : references >
+
+' Tasking + communication
+TaskGroupTemplate "1" -- "0..*" TaskTemplate
+TaskGroupTemplate "1" -- "0..*" TaskGroup
+TaskGroup "1" -- "0..*" Task
+Patient "1" <-- "0..*" TaskGroup : context (optional)
+Episode "1" <-- "0..*" TaskGroup : context (optional)
+ColloqiumAgenda "1" <-- "0..*" TaskGroup : context (optional)
+Coordination "1" <-- "0..*" TaskGroup : context (optional)
+User "1" <-- "0..*" Task : assigned to (optional)
+User "1" <-- "0..*" Task : closed by (optional)
+Information "1" -- "0..*" InformationRead
+User "1" <-- "0..*" InformationRead : read state
+User "1" <-- "0..*" Information : authored by
+User "1" <-- "0..*" Favorite : owner
+
+@enduml

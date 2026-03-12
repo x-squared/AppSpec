@@ -1,0 +1,514 @@
+# DIY Manual
+
+Practical command cookbook for running TPL-App end-to-end from terminal cells (including Quarto).
+
+Use this from repository root unless a section says otherwise.
+
+## Where To Find API/Options Reference
+
+This manual is intentionally a practical cookbook. Full API/option references live in focused manuals:
+
+- Backend HTTP API and endpoint overview: `doc/server-manual.qmd` (+ live OpenAPI at `http://localhost:8000/docs`)
+- Database tool CLI options (`db_schema`, `db_data`, `db_admin`): `doc/database-manual.qmd`
+- Seed categories/profiles/seed CLI options: `doc/seeding-manual.qmd`
+- i18n architecture and translation operations: `doc/i18n-manual.qmd`
+- Scheduler architecture and operations: `doc/scheduler-manual.qmd`
+
+Use this DIY file for runnable sequences and common operational flows.
+
+## Quick Start (Most Used)
+
+> Note: Quarto does not open new terminals automatically. Start backend and frontend in separate terminals manually (for example Terminal A: backend, Terminal B: frontend), because both commands are long-running.
+
+### 1) Check and remove stale dev processes (recommended before start)
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App
+echo "Before cleanup:"
+lsof -i tcp:8000 || true
+lsof -i tcp:5173 || true
+
+# Graceful stop first
+lsof -ti tcp:8000 | xargs -r kill -15
+lsof -ti tcp:5173 | xargs -r kill -15
+sleep 1
+
+# If still running, force stop
+lsof -ti tcp:8000 | xargs -r kill -9
+lsof -ti tcp:5173 | xargs -r kill -9
+
+echo "After cleanup:"
+lsof -i tcp:8000 || true
+lsof -i tcp:5173 || true
+```
+
+### 2) Database management (schema and data are split)
+
+Use dedicated modules:
+
+- `app.db_schema` for schema (DDL only)
+- `app.db_data` for data operations (DML only)
+- `app.db_admin` as convenience wrapper for common combinations
+
+For full option reference and detailed behavior, see `doc/database-manual.qmd`.
+
+Default for `app.db_admin` is `--mode refresh` (migrate schema + clean data + seed).
+If schema drift cannot be reconciled by `migrate`, `refresh` automatically falls back to schema recreate.
+Before refresh/recreate, `db_admin` now automatically exports Dev-Forum requests to a timestamped folder under the database directory (`.../dev_forum_exports/export-<timestamp>`) and then attempts re-import after rebuild.
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_admin --mode refresh --env DEV
+```
+
+#### Common full commands
+
+**A) Recreate entirely (drop/create schema + seed):**
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_admin --mode recreate --env DEV
+```
+
+**B) Update schema only (keep current data):**
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_schema --mode migrate --env DEV
+```
+
+**B2) Verify schema compatibility (read-only):**
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_schema --mode verify --check-level strict --env DEV
+```
+
+Use `--check-level basic` when you only want table/column presence checks.
+
+**C) Update schema + clean data + seed (recommended default):**
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_admin --mode refresh --env DEV
+```
+
+**D) Only clean data (keep schema, no reseed):**
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_data --mode clean --env DEV
+```
+
+Note: clean/refresh now exports current DB translation bundles into `backend/app/seed/datasets/core/translations_runtime_snapshot.py` before wiping tables.
+If Dev-Forum restore fails after rebuild, the exported snapshot files are kept and the CLI prints a retry hint.
+
+**E) Backfill procurement runtime (legacy -> unified, idempotent):**
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_data --mode migrate-procurement-runtime --env DEV
+```
+
+Migration modes run a post-migration schema verification automatically (`--migration-check-level strict` by default).
+
+**E2) Backfill audit fields (idempotent):**
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_data --mode migrate-audit-fields --env DEV
+```
+
+**E3) Backfill medical-value LOINC/UCUM fields (idempotent):**
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_data --mode migrate-medical-value-units --env DEV
+```
+
+**E4) Verify medical-value LOINC/UCUM rollout completeness (read-only):**
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_data --mode verify-medical-value-units --env DEV
+```
+
+Expected success condition for completed migration work:
+
+- command exits successfully
+- verifier reports `issue_count = 0`
+
+**F) Capture current DB translations into `translations.json`:**
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_data --mode export-translations-json --env DEV
+```
+
+**G) Clear translation bundles from DB only (no `translations.json` write):**
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_admin --mode clear-translation-bundles --env DEV
+```
+
+This removes runtime translation overrides from DB tables (`TRANSLATION_BUNDLE` and legacy `TRANSLATION_OVERRIDE`) without exporting anything into `frontend/src/i18n/translations.json`.
+
+**H) One-time normalize stale Dev-Forum capture label override (keep all other overrides):**
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_admin --mode normalize-legacy-dev-forum-capture-label --env DEV
+```
+
+This rewrites only legacy values of `devForum.capture.captureContext` (`Capture current context` / `Aktuellen Kontext erfassen`) to the current label (`Open ticket` / `Ticket öffnen`) inside DB translation bundles.
+
+### 3) Start backend
+
+```{bash}
+clear
+echo "Starting backend..."
+cd backend
+source .venv/bin/activate
+export TPL_ENV=DEV
+uvicorn app.main:app --reload
+```
+
+### 4) Start frontend (not in same terminal as backend)
+
+```{bash}
+cd frontend
+npm run dev
+```
+
+### 5) Run standard spec tests
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App
+python -m qa.spec_tools.run_specs
+```
+
+### 5a) Run backend unit tests (pytest)
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+python -m pytest tests -q
+```
+
+### 6) Run conceptual spec suite (`conceptual-case`)
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App
+python -m qa.spec_tools.run_conceptual_specs
+```
+
+This suite includes both conceptual checks:
+
+- domain-model consistency (`check_domain_sync`)
+- architecture dependency consistency (`check_architecture_dependencies`)
+
+### 7) Run standalone domain-model sync check (part of the conceptual spec suite)
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+cd /Users/stephan/Workspace/TPL-App
+python -m qa.spec_tools.check_domain_sync
+```
+
+### 8) Run standalone architecture dependency check (part of the conceptual spec suite)
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+cd /Users/stephan/Workspace/TPL-App
+python -m qa.spec_tools.check_architecture_dependencies
+```
+
+### 9) Run client-server spec tests
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App
+python -m qa.spec_tools.run_client_server_specs
+```
+
+### 10) Run all test pipelines in sequence
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App
+python -m qa.spec_tools.run_all_tests
+```
+
+### 11) Execute suggestions from latest reports
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App
+python -m qa.spec_tools.run_suggestions --report qa/reports/latest-spec-report.md
+python -m qa.spec_tools.run_suggestions --report qa/reports/latest-partner-report.md
+```
+
+### 12) Scheduler quick operations (admin API)
+
+List jobs:
+
+```{bash}
+curl -s http://localhost:8000/api/admin/scheduler/jobs \
+  -H "Authorization: Bearer <ADMIN_TOKEN>"
+```
+
+List recent runs for one job:
+
+```{bash}
+curl -s "http://localhost:8000/api/admin/scheduler/jobs/coordination.explantation_24h_completeness_check/runs?limit=20" \
+  -H "Authorization: Bearer <ADMIN_TOKEN>"
+```
+
+Trigger job manually:
+
+```{bash}
+curl -s -X POST http://localhost:8000/api/admin/scheduler/jobs/coordination.explantation_24h_completeness_check/trigger \
+  -H "Authorization: Bearer <ADMIN_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"correlation_id":"manual-dev-run"}'
+```
+
+Enable job:
+
+```{bash}
+curl -s -X PUT http://localhost:8000/api/admin/scheduler/jobs/coordination.explantation_24h_completeness_check/enabled \
+  -H "Authorization: Bearer <ADMIN_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"is_enabled":true}'
+```
+
+Pause job:
+
+```{bash}
+curl -s -X PUT http://localhost:8000/api/admin/scheduler/jobs/coordination.explantation_24h_completeness_check/enabled \
+  -H "Authorization: Bearer <ADMIN_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"is_enabled":false}'
+```
+
+------------------------------------------------------------------------
+
+## Environment Setup (One-Time)
+
+### Backend dependencies
+
+```{bash}
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### Frontend dependencies
+
+```{bash}
+cd frontend
+npm install
+```
+
+### Playwright browsers
+
+```{bash}
+cd frontend
+npx playwright install
+```
+
+------------------------------------------------------------------------
+
+## Runtime Configuration (Optional)
+
+### Common local defaults
+
+```{bash}
+export TPL_ENV=DEV
+export TPL_CORS_ORIGINS=http://localhost:5173
+```
+
+### Override seed profile
+
+```{bash}
+export TPL_SEED_PROFILE=CORE_TEST
+```
+
+------------------------------------------------------------------------
+
+## Health and Status Checks
+
+### Backend health endpoint
+
+```{bash}
+curl -s http://localhost:8000/api/health
+```
+
+### Check which process owns backend/frontend ports
+
+```{bash}
+lsof -i tcp:8000
+lsof -i tcp:5173
+```
+
+------------------------------------------------------------------------
+
+## Stop Server / Client
+
+### Gracefully stop backend (port 8000)
+
+```{bash}
+lsof -ti tcp:8000 | xargs -r kill -15
+```
+
+### Gracefully stop frontend (port 5173)
+
+```{bash}
+lsof -ti tcp:5173 | xargs -r kill -15
+```
+
+### Force stop if needed
+
+```{bash}
+lsof -ti tcp:8000 | xargs -r kill -9
+lsof -ti tcp:5173 | xargs -r kill -9
+```
+
+------------------------------------------------------------------------
+
+## Database Operations (SQLite)
+
+### DB file location
+
+-   `database/tpl_app.db`
+
+### Reset database (recreate schema + seed explicitly)
+
+```{bash}
+cd backend
+source .venv/bin/activate
+python -m app.db_admin --mode recreate --env DEV
+```
+
+### Clean database content but keep SQLite file
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_data --mode clean --env DEV
+```
+
+Optional custom DB URL/path override:
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_data --mode clean --env DEV --db-url sqlite:///../database/tpl_app.db
+```
+
+------------------------------------------------------------------------
+
+## Seeding Commands (Manual)
+
+```{bash}
+cd backend
+source .venv/bin/activate
+python -m app.seed list
+python -m app.seed resolve
+python -m app.seed run --env DEV
+python -m app.seed run --env PROD --profile CORE
+```
+
+------------------------------------------------------------------------
+
+## Report/Test Artifacts
+
+### View latest reports
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App
+ls -la qa/reports
+```
+
+### Remove generated artifacts (safe cleanup)
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App
+rm -rf qa/reports/*
+rm -rf qa/tests/generated/*
+rm -rf frontend/test-results/*
+rm -rf frontend/playwright-report/*
+```
+
+------------------------------------------------------------------------
+
+## Dev-Forum (DEV/TEST mode)
+
+The Dev-Forum API/UI is active only in `DEV` and `TEST` environments.  
+The `Development` tab is restricted to users with role key `DEV`; `Capturing` and `Review` remain available to all authenticated users.
+
+Typical bootstrap command (refresh DB + seed role data):
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+python -m app.db_admin --mode refresh --env DEV
+```
+
+Then start backend/frontend as usual and use:
+
+- Sidebar DEV section:
+  - `Dev-Forum` page (Review + Development, with developer filter)
+  - `Show Dev-Forum panel` toggle (right-side Capturing/Review/Development forum)
+- Capturing creates `DEV_REQUEST` rows with structured context (`capture_url`, `capture_gui_part`, `capture_state_json`).
+- Development decisions (`REJECTED` or `IMPLEMENTED`) move requests to user `Review`.
+- User `Not accepted` creates a linked follow-up request.
+
+------------------------------------------------------------------------
+
+## Repo Cleaning (Use With Care)
+
+### Update dependencies and rebuild
+
+```{bash}
+cd frontend
+npm install
+npm run build
+```
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App
+python -m py_compile backend/app/main.py
+```
+
+### DANGER: remove untracked files and folders
+
+Only run this if you understand the impact:
+
+```
+cd /Users/stephan/Workspace/TPL-App
+git clean -fd
+```
+
+------------------------------------------------------------------------
+
+## Quarto Notes
+
+-   Quarto can run shell chunks using the `{bash}` blocks used in this file.
+-   Recommended pattern: run one section at a time, top to bottom.
+-   Keep backend/frontend in separate running terminals while executing test/report sections.

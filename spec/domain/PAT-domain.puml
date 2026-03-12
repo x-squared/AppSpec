@@ -1,0 +1,32 @@
+@startuml
+title TPL Domain - PAT (Patient)
+
+hide methods
+hide stereotypes
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+left to right direction
+
+class Patient
+class ContactInfo
+class Absence
+class Diagnosis
+class MedicalValueGroupTemplate
+class MedicalValueTemplate
+class MedicalValueGroup
+class MedicalValue
+class Episode
+
+Patient "1" -- "0..*" ContactInfo
+Patient "1" -- "0..*" Absence
+Patient "1" -- "0..*" Diagnosis
+Patient "1" -- "0..*" MedicalValueGroup
+Patient "1" -- "0..*" MedicalValue
+MedicalValueGroupTemplate "1" -- "0..*" MedicalValueTemplate
+MedicalValueGroupTemplate "1" -- "0..*" MedicalValueGroup
+MedicalValueTemplate "1" -- "0..*" MedicalValue
+MedicalValueGroup "1" -- "0..*" MedicalValue
+Episode "1" <-- "0..*" MedicalValue : context (optional)
+Patient "1" -- "0..*" Episode : contextual reference to TPLK episode
+
+@enduml

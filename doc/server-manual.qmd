@@ -1,0 +1,189 @@
+# Server Manual
+
+This manual explains how to configure and start the TPL backend server.
+
+For detailed seeding behavior (core/sample/test data), see `doc/seeding-manual.qmd`.
+For specification-to-test workflow, see `doc/specification-manual.qmd`.
+For end-to-end security architecture and controls, see `doc/security-manual.qmd`.
+For i18n architecture and translation runtime/admin flows, see `doc/i18n-manual.qmd`.
+For scheduler architecture and operations, see `doc/scheduler-manual.qmd`.
+
+## 1) What "server" means in this project
+
+The backend server is a FastAPI application started from:
+
+- `backend/app/main.py`
+
+By default, it uses a SQLite database at:
+
+- `database/tpl_app.db`
+
+## API And Option References
+
+- HTTP endpoint options (query/body/response schema): use live OpenAPI at `http://localhost:8000/docs` (or `/openapi.json`).
+- Server startup/runtime options and environment variables: this manual (`doc/server-manual.qmd`).
+- Database tool CLI options (`db_schema`, `db_data`, `db_admin`): `doc/database-manual.qmd`.
+- Seeding profile/category options: `doc/seeding-manual.qmd`.
+
+## 2) Prerequisites
+
+- Python 3.10+ (recommended)
+- `pip`
+- Terminal access to the repository root
+
+## 3) First-time setup
+
+From project root:
+
+```{bash}
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+## 4) Runtime configuration
+
+The server reads configuration from environment variables centralized in:
+
+- `backend/app/config.py`
+
+### Core environment variables
+
+- `TPL_ENV`: logical runtime environment (`DEV`, `TEST`, `PROD`)
+- `TPL_DATABASE_URL`: database connection string (default: SQLite file in `database/`)
+- `TPL_CORS_ORIGINS`: comma-separated allowed browser origins
+- `TPL_SEED_PROFILE`: optional explicit seed profile override
+
+### Support ticket mail configuration
+
+Support ticket mail destination is configured via JSON file (not env vars):
+
+- `backend/config/config`
+
+Expected shape:
+
+```json
+{
+  "support": {
+    "email": "support@tpl-app.local"
+  }
+}
+```
+
+This address is exposed to the frontend via `GET /api/support-ticket/config` and used by the "Open Ticket" action in error banners.
+When a user opens a ticket draft, the frontend also stores the captured error context into `DEV_REQUEST` via `POST /api/support-ticket/capture-dev-forum` (available in all environments).
+
+Seed profile semantics and allowed values are documented in:
+
+- `doc/seeding-manual.qmd`
+
+### Recommended defaults
+
+- Local development: `TPL_ENV=DEV`
+- Production-like run: `TPL_ENV=PROD`
+- Keep browser access default by including `http://localhost:5173` in `TPL_CORS_ORIGINS`
+
+## 5) Start the backend server
+
+From `backend/` with the virtual environment activated:
+
+```{bash}
+uvicorn app.main:app --reload
+```
+
+Server endpoints:
+
+- API base: `http://localhost:8000`
+- Health check: `http://localhost:8000/api/health`
+- Swagger UI: `http://localhost:8000/docs`
+- Translation runtime overrides (authenticated read): `GET /api/translations/overrides?locale=<key>`
+- Translation admin management (admin only): `GET/PUT /api/admin/translations/?locale=<key>`
+- Coordination rejected-workflow clear command: `POST /api/coordinations/{coordination_id}/procurement-flex/organs/{organ_id}/rejected-workflow/clear`
+- Coordination completion state (ensures completion blocks/tasks): `GET /api/coordinations/{coordination_id}/completion`
+- Coordination completion confirm command: `POST /api/coordinations/{coordination_id}/completion/confirm`
+- Episode workflow start-listing command: `POST /api/patients/{patient_id}/episodes/{episode_id}/workflow/start-listing`
+- Episode workflow close command: `POST /api/patients/{patient_id}/episodes/{episode_id}/workflow/close`
+- Episode workflow reject command: `POST /api/patients/{patient_id}/episodes/{episode_id}/workflow/reject`
+- Episode workflow cancel command: `POST /api/patients/{patient_id}/episodes/{episode_id}/workflow/cancel`
+- Coordination clock state: `GET /api/coordinations/{coordination_id}/time-logs/clock-state`
+- Coordination clock start command: `POST /api/coordinations/{coordination_id}/time-logs/clock/start`
+- Coordination clock stop command: `POST /api/coordinations/{coordination_id}/time-logs/clock/stop`
+- Scheduler jobs list: `GET /api/admin/scheduler/jobs`
+- Scheduler run history: `GET /api/admin/scheduler/jobs/{job_key}/runs`
+- Scheduler manual trigger: `POST /api/admin/scheduler/jobs/{job_key}/trigger`
+- Scheduler enable/disable: `PUT /api/admin/scheduler/jobs/{job_key}/enabled`
+- Support ticket -> dev-forum capture bridge: `POST /api/support-ticket/capture-dev-forum`
+
+## 6) Typical startup examples
+
+### A) Development (core + sample seed data)
+
+```{bash}
+export TPL_ENV=DEV
+uvicorn app.main:app --reload
+```
+
+### B) Production-safe seeding (core only)
+
+```{bash}
+export TPL_ENV=PROD
+uvicorn app.main:app --reload
+```
+
+### C) Explicit profile override
+
+```{bash}
+export TPL_ENV=DEV
+export TPL_SEED_PROFILE=CORE_TEST
+uvicorn app.main:app --reload
+```
+
+### D) Custom DB and CORS configuration
+
+```{bash}
+export TPL_DATABASE_URL=sqlite:///../database/tpl_app.db
+export TPL_CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+uvicorn app.main:app --reload
+```
+
+## 7) Restarting the server
+
+If running in terminal foreground:
+
+- Stop with `Ctrl+C`
+- Start again with the same `uvicorn ...` command
+
+If running with `--reload`, code changes trigger automatic restart.
+
+## 8) Troubleshooting
+
+- **Port already in use**: stop the process using port `8000`, then restart.
+- **Unexpected seed data**: verify `TPL_ENV` and `TPL_SEED_PROFILE`.
+- **No seed changes visible**: run `python -m app.seed run ...` (or `python -m app.db_admin --mode refresh ...`) after changing seed files.
+- **RBAC changes not applied**: after editing `backend/app/seed/datasets/core/access_rules.py`, run `python -m app.db_admin --mode refresh --env <ENV>`, restart backend, then re-login in frontend.
+- **Need to run seeds manually**: use `python -m app.seed run ...` from `backend/`.
+- **Import/runtime errors after dependency changes**: re-run `pip install -r requirements.txt`.
+
+## 9) Operational notes
+
+- Startup does not create or mutate database schema/data.
+- Startup performs read-only compatibility checks:
+  - schema compatibility check against SQLAlchemy model metadata (strict mode: tables/columns/types/nullability/indexes/constraints/FKs)
+  - enum/code alignment check for strong enum domains
+- Use explicit DB scripts (`app.db_schema`, `app.db_data`, `app.db_admin`) for all schema and data changes.
+  - optional preflight check: `python -m app.db_schema --mode verify --check-level strict --env <ENV>`
+  - optional procurement runtime backfill: `python -m app.db_data --mode migrate-procurement-runtime --env <ENV>`
+- Startup does not run seeding. Use DB/seed scripts explicitly when data refresh is required.
+- Episode workflow transition policy:
+  - New episodes start in Evaluation.
+  - Episode organs can only be added (or reactivated) while the episode is in Evaluation.
+  - Listing starts only via explicit workflow command.
+  - Assigning an episode to a coordination transitions it to coordination allocation (Transplantation phase + allocated status).
+  - Setting `tpl_date` on a coordination-episode transitions it to transplanted.
+  - Confirming coordination completion transitions linked episodes to Follow-Up.
+  - Generic `PATCH /episodes/{id}` edits are phase-scoped; terminal state transitions must use workflow commands.
+
+For all seed design and profile details, always refer to:
+
+- `doc/seeding-manual.qmd`

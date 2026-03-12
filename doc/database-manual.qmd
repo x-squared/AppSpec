@@ -1,0 +1,252 @@
+# Database Manual
+
+Purpose: manage schema and data lifecycle explicitly during development and operations.
+
+For backend HTTP endpoint contracts, use `doc/server-manual.qmd` and live OpenAPI (`/docs`).
+For seed profile/category semantics, use `doc/seeding-manual.qmd`.
+
+The backend now separates:
+
+- schema management (DDL): `python -m app.db_schema`
+- data management (DML): `python -m app.db_data`
+- convenience orchestration: `python -m app.db_admin`
+
+Run commands from `backend/` with the venv activated.
+
+## Quick Examples
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+```
+
+Recreate everything (drop/create schema + seed):
+
+```{bash}
+python -m app.db_admin --mode recreate --env DEV
+```
+
+Update schema only (keep data):
+
+```{bash}
+python -m app.db_schema --mode migrate --env DEV
+```
+
+Default refresh (migrate schema + clean data + seed):
+
+```{bash}
+python -m app.db_admin --mode refresh --env DEV
+```
+
+Clean data only:
+
+```{bash}
+python -m app.db_data --mode clean --env DEV
+```
+
+## `app.db_schema` (DDL only)
+
+```{bash}
+python -m app.db_schema --mode <recreate|migrate|verify> --env <DEV|TEST|PROD> [--check-level <basic|strict>] [--db-url <URL>]
+```
+
+- `recreate`: drops all tables and creates schema from current model metadata.
+- `migrate`: creates missing schema objects from model metadata.
+- `verify`: reports schema drift (tables/columns/types/nullability/indexes/unique constraints/foreign keys), no writes.
+- `--check-level basic`: checks table/column presence only.
+- `--check-level strict` (default): includes type/nullability/index/index-unique/unique/FK checks.
+
+Use `verify` in CI or before release checks.
+
+## `app.db_data` (DML only)
+
+```{bash}
+python -m app.db_data --mode <clean|seed|refresh|export-dev-forum|import-dev-forum|migrate-audit-fields|migrate-medical-value-units|verify-medical-value-units|migrate-procurement-runtime|migrate-procurement-typed|export-translations-json|normalize-legacy-dev-forum-capture-label> --env <DEV|TEST|PROD> [--seed-profile <PROFILE>] [--db-url <URL>] [--migration-check-level <basic|strict>] [--dev-forum-export-dir <DIR>]
+```
+
+- `clean`: wipes row data, keeps schema.
+- `seed`: loads seed jobs resolved by env/profile.
+- `refresh`: `clean + seed`.
+- `export-dev-forum`: exports current `DEV_REQUEST` rows to snapshot files (`dev_forum_requests.json` + `README.md`) in a timestamped folder under the database directory (`.../dev_forum_exports/export-<timestamp>`).
+- `import-dev-forum`: imports `DEV_REQUEST` rows from an export snapshot (`--dev-forum-export-dir` required for deterministic restore).
+- `migrate-audit-fields`: idempotent audit backfill helper that adds missing `CREATED_BY` columns on tables with `CHANGED_BY` and backfills `CREATED_BY <- CHANGED_BY` where empty.
+- `migrate-medical-value-units`: idempotent helper that adds missing LOINC/UCUM medical-value columns and backfills compatibility values.
+- `verify-medical-value-units`: read-only rollout verification (LOINC template coverage, UCUM canonical-unit completeness for numeric datatypes, runtime normalization completeness).
+- `migrate-procurement-runtime`: idempotent backfill from legacy procurement runtime tables (`COORDINATION_PROCUREMENT_VALUE*`) into unified runtime tables (`COORDINATION_PROCUREMENT_DATA*`).
+- `migrate-procurement-typed`: idempotent backfill from unified runtime rows into typed procurement runtime tables.
+- `export-translations-json`: writes current DB translation bundles back to `frontend/src/i18n/translations.json` (preserves existing labels, updates text values).
+- `normalize-legacy-dev-forum-capture-label`: one-time targeted normalization of stale runtime override values for `devForum.capture.captureContext` (`Capture current context` / `Aktuellen Kontext erfassen`) to the current labels (`Open ticket` / `Ticket öffnen`) without deleting other overrides.
+- `--migration-check-level strict` (default): after every migration mode, run strict schema verification and fail on drift (`exit code 2`).
+- `--migration-check-level basic`: after every migration mode, verify only table/column presence.
+
+### Seed profile resolution
+
+- no profile: resolved from env (`DEV`, `TEST`, `PROD`)
+- explicit profile examples:
+  - `INIT`
+  - `CORE`
+  - `CORE_SAMPLE`
+  - `CORE_TEST`
+  - `NONE`
+
+Example:
+
+```{bash}
+python -m app.db_data --mode seed --env TEST --seed-profile CORE_TEST
+```
+
+Explicit procurement runtime backfill:
+
+```{bash}
+python -m app.db_data --mode migrate-procurement-runtime --env DEV
+```
+
+Explicit typed procurement backfill:
+
+```{bash}
+python -m app.db_data --mode migrate-procurement-typed --env DEV
+```
+
+Explicit audit-field backfill:
+
+```{bash}
+python -m app.db_data --mode migrate-audit-fields --env DEV
+```
+
+Explicit medical-value unit backfill:
+
+```{bash}
+python -m app.db_data --mode migrate-medical-value-units --env DEV
+```
+
+Read-only LOINC/UCUM coverage verification:
+
+```{bash}
+python -m app.db_data --mode verify-medical-value-units --env DEV
+```
+
+Strict completion contract for the LOINC/UCUM rollout:
+
+- treat this verifier as a quality gate for completed migrations
+- expected outcome for a fully migrated seed/runtime baseline is `issue_count = 0`
+- any non-zero result means rollout gaps remain in templates, datatype metadata, or runtime normalization fields
+
+Export current translations from DB to frontend baseline file:
+
+```{bash}
+python -m app.db_data --mode export-translations-json --env DEV
+```
+
+One-time targeted cleanup for legacy Dev-Forum capture label overrides:
+
+```{bash}
+python -m app.db_data --mode normalize-legacy-dev-forum-capture-label --env DEV
+```
+
+## `app.db_admin` (wrapper)
+
+```{bash}
+python -m app.db_admin --mode <recreate|migrate|refresh|clean|migrate-audit-fields|migrate-medical-value-units|verify-medical-value-units|migrate-procurement-runtime|migrate-procurement-typed|normalize-legacy-dev-forum-capture-label> --env <DEV|TEST|PROD> [--seed-profile <PROFILE>] [--db-url <URL>] [--migration-check-level <basic|strict>]
+```
+
+Mode behavior:
+
+- `recreate` = `db_data export-dev-forum` + `db_schema recreate` + `db_data seed` + `db_data import-dev-forum` (best effort)
+- `migrate` = `db_schema migrate`
+- `refresh` = `db_data export-dev-forum` + `db_schema migrate` + `db_data refresh` + `db_data import-dev-forum` (best effort, default)
+- `clean` = `db_data clean`
+- `migrate-audit-fields` = `db_data migrate-audit-fields`
+- `migrate-medical-value-units` = `db_data migrate-medical-value-units`
+- `verify-medical-value-units` = `db_data verify-medical-value-units`
+- `migrate-procurement-runtime` = `db_data migrate-procurement-runtime`
+- `migrate-procurement-typed` = `db_data migrate-procurement-typed`
+- `normalize-legacy-dev-forum-capture-label` = `db_data normalize-legacy-dev-forum-capture-label`
+
+For `refresh`, if `migrate` cannot reconcile schema drift, the wrapper automatically falls back to `db_schema recreate` before data refresh.
+
+If Dev-Forum import cannot be applied after rebuild (for example schema/user-reference incompatibility), the wrapper prints a warning/hint and keeps the export files in `.../dev_forum_exports/...` for manual inspection/retry.
+
+## Recommended Usage by Scenario
+
+Local development reset (most common):
+
+```{bash}
+python -m app.db_admin --mode refresh --env DEV
+```
+
+After model changes, keep existing data if possible:
+
+```{bash}
+python -m app.db_schema --mode migrate --env DEV
+```
+
+After conceptual model changes (or to verify no drift), run domain spec sync check:
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+cd /Users/stephan/Workspace/TPL-App
+python -m qa.spec_tools.check_domain_sync
+```
+
+To run conceptual checks from `spec/testing/conceptual/*.md`, use:
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App
+python -m qa.spec_tools.run_conceptual_specs
+```
+
+To run standalone architecture dependency check, use:
+
+```{bash}
+cd /Users/stephan/Workspace/TPL-App/backend
+source .venv/bin/activate
+cd /Users/stephan/Workspace/TPL-App
+python -m qa.spec_tools.check_architecture_dependencies
+```
+
+Production-like schema check in CI:
+
+```{bash}
+python -m app.db_schema --mode verify --check-level strict --env PROD
+```
+
+## Notes
+
+- If schema is older than current models, `db_data seed` may fail; run schema step first.
+- `--db-url` allows targeting a non-default database.
+- For SQLite, "clean" keeps the file and clears all table rows.
+- Procurement runtime storage uses:
+  - `COORDINATION_PROCUREMENT_DATA` (main runtime row)
+  - `COORDINATION_PROCUREMENT_DATA_PERSON` (person refs)
+  - `COORDINATION_PROCUREMENT_DATA_TEAM` (team refs)
+- Startup does not mutate schema/data; it only verifies schema compatibility and fails fast on drift.
+
+## Strong Enum Migration Path (carried out)
+
+To reduce drift for stable technical vocabularies while keeping DB compatibility, use this migration path.
+
+### Phase 1 (completed)
+
+- Introduce backend enums in `backend/app/enums.py` for:
+  - `COORDINATION_STATUS`
+  - `FAVORITE_TYPE`
+  - `TASK_SCOPE`
+  - `TASK_STATUS`
+  - `PRIORITY`
+- Replace magic string keys in services with enum constants.
+- Keep existing `CODE` table references and foreign keys unchanged (no API break).
+- Align core seed data to enum constants in `backend/app/seed/datasets/core/codes.py`.
+- Enforce startup alignment check between enum definitions and existing `CODE` rows.
+
+### Phase 2 (completed, compatibility mode)
+
+- Added enum-key persistence columns for strong enum domains:
+  - `COORDINATION.STATUS_KEY`
+  - `TASK_GROUP_TEMPLATE.SCOPE_KEY`
+  - `TASK_TEMPLATE.PRIORITY_KEY`
+  - `TASK.PRIORITY_KEY`
+  - `TASK.STATUS_KEY`
+- Migration/backfill remains an explicit script responsibility (`app.db_schema` / `app.db_admin`), not a startup action.
+- Updated service write paths and seed loaders so new/updated rows write enum keys deterministically.
+- Kept `*_id -> CODE.ID` fields and API contracts for backward compatibility while transitioning consumers to key-based semantics.

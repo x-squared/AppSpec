@@ -1,0 +1,16 @@
+@startuml
+title TPL Architecture - System Context
+
+left to right direction
+skinparam shadowing false
+
+actor "Coordinator / Physician / Admin" as User
+rectangle "TPL Application" as TPL
+database "SQLite / DB Backend" as DB
+cloud "Browser Runtime" as Browser
+
+User --> Browser : interacts
+Browser --> TPL : uses via HTTP API
+TPL --> DB : persists and queries
+
+@enduml

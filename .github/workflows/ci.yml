@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  dependency-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Vulnerability scan
+        run: echo "TODO: add scanner (npm/pip/audit)"
+      - name: Outdated report
+        run: echo "TODO: add outdated dependency report"
+      - name: Lockfile consistency
+        run: echo "TODO: validate lockfiles"
+  dependency-graph-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Graph rule check
+        run: ./scripts/check_dependency_graph.sh
+  translation-ownership-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Translation ownership check
+        run: ./scripts/check_translation_ownership.sh
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build/Test placeholder
+        run: echo "TODO: wire repo-specific build/test commands"

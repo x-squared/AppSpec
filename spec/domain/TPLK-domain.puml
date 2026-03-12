@@ -1,0 +1,57 @@
+@startuml
+title TPL Domain - TPLK (Transplantationskoordination)
+
+hide methods
+hide stereotypes
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+left to right direction
+
+class Episode
+class EpisodeOrgan
+class Coordination
+class CoordinationDonor
+class CoordinationEpisode
+class CoordinationOrigin
+class CoordinationOrganEffect
+class CoordinationProcurement
+class CoordinationProcurementOrganRejection
+class CoordinationProcurementFieldGroupTemplate
+class CoordinationProcurementFieldTemplate
+class CoordinationProcurementFieldScopeTemplate
+class CoordinationProcurementData
+class CoordinationProcurementDataPerson
+class CoordinationProcurementDataTeam
+class CoordinationProcurementTypedData
+class CoordinationProcurementTypedDataPersonList
+class CoordinationProcurementTypedDataTeamList
+class CoordinationProcurementProtocolTaskGroupSelection
+class CoordinationTimeLog
+class CoordinationProtocolEventLog
+class Task
+
+Episode "1" -- "0..*" EpisodeOrgan
+
+Coordination "1" -- "0..1" CoordinationDonor
+Coordination "1" -- "0..*" CoordinationEpisode
+Coordination "1" -- "0..*" CoordinationOrigin
+Coordination "1" -- "0..*" CoordinationOrganEffect
+Coordination "1" -- "0..1" CoordinationProcurement
+Coordination "1" -- "0..*" CoordinationTimeLog
+Coordination "1" -- "0..*" CoordinationProtocolEventLog
+
+Episode "1" <-- "0..*" CoordinationEpisode : references >
+Task "1" <-- "0..*" CoordinationProtocolEventLog : optional task reference
+
+CoordinationProcurement "1" -- "0..*" CoordinationProcurementOrganRejection
+CoordinationProcurementFieldGroupTemplate "1" -- "0..*" CoordinationProcurementFieldTemplate
+CoordinationProcurementFieldTemplate "1" -- "0..*" CoordinationProcurementFieldScopeTemplate
+CoordinationProcurementFieldTemplate "1" -- "0..*" CoordinationProcurementData
+CoordinationProcurementData "1" -- "0..*" CoordinationProcurementDataPerson
+CoordinationProcurementData "1" -- "0..*" CoordinationProcurementDataTeam
+CoordinationProcurementFieldTemplate "1" -- "0..*" CoordinationProcurementTypedData
+CoordinationProcurementTypedData "1" -- "0..*" CoordinationProcurementTypedDataPersonList
+CoordinationProcurementTypedData "1" -- "0..*" CoordinationProcurementTypedDataTeamList
+CoordinationProcurement "1" -- "0..*" CoordinationProcurementProtocolTaskGroupSelection
+
+@enduml

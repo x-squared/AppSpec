@@ -1,0 +1,19 @@
+@startuml
+title TPL Domain - STCS (Transplant-Kohortenstudie)
+
+hide methods
+hide stereotypes
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+left to right direction
+
+class STCSDomain
+
+note right of STCSDomain
+In the current data model there are
+no dedicated STCS-specific SQLAlchemy entities.
+STCS requirements currently map to
+shared foundation and clinical entities.
+end note
+
+@enduml
