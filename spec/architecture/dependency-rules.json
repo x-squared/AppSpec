@@ -16,7 +16,7 @@
     {
       "id": "ARCH-R2",
       "description": "Feature services must not import routers",
-      "source_glob": "backend/app/features/**/service.py",
+      "source_glob": "backend/app/features/*.py",
       "deny_module_prefixes": [
         "app.routers."
       ],
