@@ -1,0 +1,12 @@
+---
+description: Keep conceptual domain specs and sync-check artifacts aligned with model changes
+alwaysApply: true
+---
+
+# Domain Spec Sync With Data Model
+
+When changing model structures, update conceptual specs in the same change set.
+
+- Keep `spec/domain/*.puml` diagrams aligned with model semantics.
+- Keep `spec/domain/domain-sync-mapping.json` aligned with renamed or re-scoped entities.
+- Keep checker docs and scripts aligned when checker behavior changes.

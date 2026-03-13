@@ -1,0 +1,10 @@
+---
+description: Author and update requirement specifications using the agreed Markdown hierarchy and labels
+alwaysApply: true
+---
+
+# Specification Structure Rule
+
+- Requirement docs live in `spec/requirements/` as Markdown `.md`.
+- Use hierarchy `Feature -> Use Case -> Story -> Item` without skipped levels.
+- Ensure Use Case/Story/Item headings always carry a status label.

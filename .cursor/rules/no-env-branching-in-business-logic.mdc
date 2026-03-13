@@ -1,0 +1,9 @@
+---
+description: Keep business logic identical across environments
+alwaysApply: true
+---
+
+# No Environment Branching In Business Logic
+
+- Do not alter domain behavior based on environment profile.
+- Keep environment variation limited to operational concerns (logging, diagnostics, tooling).

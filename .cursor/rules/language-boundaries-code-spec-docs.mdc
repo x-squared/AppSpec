@@ -1,0 +1,10 @@
+---
+description: Language boundaries for code, specifications, and technical documentation
+alwaysApply: true
+---
+
+# Language Boundaries
+
+- Code and machine artifacts are in English.
+- Requirement specs under `spec/requirements/` are in German.
+- Technical docs may be German or English but should remain consistent per document.

@@ -1,0 +1,12 @@
+---
+description: Do not edit requirement specs unless explicitly requested
+alwaysApply: true
+---
+
+# Spec Edit Safety Rule
+
+Requirement specifications under `spec/requirements/` are user-owned.
+
+- Do not change files in `spec/requirements/` unless explicitly requested in the current task.
+- If implementation implies a spec update, ask first unless the user asked for spec editing.
+- Treat user wording as source of truth and avoid silent rewrites.

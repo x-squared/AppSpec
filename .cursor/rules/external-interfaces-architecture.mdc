@@ -1,0 +1,10 @@
+---
+description: Backend-first architecture for external interfaces and integrations
+alwaysApply: true
+---
+
+# External Interfaces Architecture
+
+- Place interface logic under `backend/app/features/interfaces/<interface_key>/`.
+- Keep router handlers thin and delegate transport/mapping/orchestration to feature modules.
+- Avoid direct coupling between external payloads and internal model/schema shapes.

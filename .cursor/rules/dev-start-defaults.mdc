@@ -1,0 +1,8 @@
+---
+description: Default to DEV mode for server/client startup unless user overrides
+alwaysApply: true
+---
+
+# DEV Startup Default
+
+- Default startup commands to DEV mode unless user requests otherwise.

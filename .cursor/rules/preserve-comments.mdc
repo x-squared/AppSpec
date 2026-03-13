@@ -1,0 +1,8 @@
+---
+description: Never remove or modify existing comments when editing code
+alwaysApply: true
+---
+
+# Preserve Existing Comments
+
+When editing files, never remove, modify, or relocate existing comments unless explicitly requested.

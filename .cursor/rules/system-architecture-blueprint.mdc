@@ -1,0 +1,13 @@
+---
+description: End-to-end architecture blueprint for building AppSpec features
+alwaysApply: true
+---
+
+# System Architecture Blueprint
+
+Use this rule as the default blueprint when designing or implementing new capabilities.
+
+- Backend API is the security and business-truth boundary.
+- Prefer explicit, composable modules over monolithic handlers/components.
+- Keep routers thin in `backend/app/routers/**`; keep business/workflow logic in `backend/app/features/**`.
+- Treat model changes as cross-cutting updates across model/schema/router/docs in one change set.

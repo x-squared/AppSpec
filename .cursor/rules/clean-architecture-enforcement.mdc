@@ -1,0 +1,13 @@
+---
+description: Enforce proactive clean architecture and drift prevention
+alwaysApply: true
+---
+
+# Clean Architecture Enforcement
+
+Apply this quality gate to every non-trivial change set.
+
+- Prevent architectural drift (duplicated logic, oversized routers, parallel implementations).
+- Prefer shared abstractions over one-off implementations.
+- Keep transport concerns in routers and business logic in feature services.
+- Propose explicit refactor stories if decomposition opportunities are identified.

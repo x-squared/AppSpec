@@ -1,0 +1,12 @@
+---
+description: Model multi-step domain flows as backend workflows with thin routers
+alwaysApply: true
+---
+
+# Workflow Orchestration Boundary
+
+Use this when one user action triggers multiple dependent side effects.
+
+- Implement orchestration in `backend/app/features/**` service modules.
+- Keep routers transport-thin (auth, parsing, delegation, HTTP mapping).
+- Prefer workflow endpoints returning refreshed state/projections.

@@ -1,0 +1,12 @@
+---
+description: Keep backend routers thin and move business logic to feature services
+alwaysApply: true
+---
+
+# Router Service Boundaries
+
+For backend API changes, separate transport concerns from business logic.
+
+- Routers (`backend/app/routers/**`) handle endpoint wiring, schema parsing, auth deps, and HTTP mapping.
+- Feature services (`backend/app/features/**`) own domain rules, orchestration, sequencing, and non-trivial validation.
+- Extract to feature services when a handler becomes multi-entity, conditional-heavy, or reusable.

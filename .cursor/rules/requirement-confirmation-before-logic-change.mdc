@@ -1,0 +1,9 @@
+---
+description: Require explicit user confirmation before inferred behavior changes
+alwaysApply: true
+---
+
+# Requirement Confirmation Before Logic Change
+
+- Do not introduce behavior changes unless explicitly requested, or explicitly proposed and confirmed.
+- If requirements are ambiguous, ask focused clarification before implementing.

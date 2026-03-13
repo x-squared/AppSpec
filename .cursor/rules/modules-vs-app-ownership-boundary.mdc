@@ -1,0 +1,11 @@
+---
+description: Keep business-domain logic in app repos and infrastructure in AppModules
+alwaysApply: true
+---
+
+# Modules vs App Ownership Boundary
+
+- App repositories own business semantics, DTO meanings, and feature workflows.
+- `AppModules` owns domain-agnostic infrastructure primitives only.
+- Never place app-specific domain rules or value universes in `AppModules`.
+- Extract code to `AppModules` only when it is infrastructure-level and cross-app reusable.

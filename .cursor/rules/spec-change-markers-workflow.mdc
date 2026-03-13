@@ -1,0 +1,13 @@
+---
+description: Process specification inline change markers safely
+globs: spec/requirements/*.md
+alwaysApply: false
+---
+
+# Specification Change Markers Workflow
+
+Apply this when working in requirement specifications under `spec/requirements/*.md`.
+
+- Support `[[ADD]]`, `[[REPLACE]]`, `[[DELETE]]`, and `[[NOTE]]` markers.
+- Keep edits focused to marked regions and preserve heading hierarchy/status labels unless explicitly requested.
+- Remove all markers after integration.
