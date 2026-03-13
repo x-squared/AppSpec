@@ -4,7 +4,13 @@ This repository contains Dev-Forum and specification-oriented capabilities extra
 
 Included:
 - Dev-Forum frontend surfaces and ticket context utilities
-- Dev-Forum/support-ticket backend routers and related schema/model dependencies
+- Dev-Forum/support-ticket backend routes, features, and schemas
+- Minimal backend model surface required by Dev-Forum/auth (`DevRequest`, `User`, `Person`, `Code`, `AccessPermission`)
 - Spec and manual artifacts relevant for AppSpec ownership
 
-Next step: tighten imports and contract boundaries against AppStack/AppModules.
+Out of scope in this repository:
+- TPLK clinical workflow models (patients, episodes, coordinations, tasks, procurement)
+- Non-Dev-Forum runtime features that belong to AppStack/AppModules
+
+Next step:
+- replace remaining local core model copies with imports from AppStack/AppModules shared contracts

@@ -1,6 +1,6 @@
 # AppSpec
 
-Scope: placeholder repository created by migration run.
+Scope: specification and Dev-Forum capability repository in AppSpace.
 
 ## Ownership
 - Team: TBD
@@ -11,3 +11,5 @@ Scope: placeholder repository created by migration run.
 
 ## Notes
 - This repository is part of AppSpace multi-root workspace.
+- Backend scope is intentionally minimal: Dev-Forum/support-ticket APIs plus auth/reference essentials.
+- TPLK runtime domain models are intentionally not owned here.
