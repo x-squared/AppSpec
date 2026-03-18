@@ -12,6 +12,7 @@ This area contains business requirements and specification documents.
 - [KOLL-Kolloquium-Spezifikation](./KOLL-Kolloquium-Spezifikation.md)
 - [PAT-Patient-Spezifikation](./PAT-Patient-Spezifikation.md)
 - [GEN-Spec-Spezifikation](./GEN-Spec-Spezifikation.md)
+- [GEN-Aspect-Graph-Spezifikation](./GEN-Aspect-Graph-Spezifikation.md)
 - [GEN-Architektur-Spezifikation](./GEN-Architektur-Spezifikation.md)
 - [GEN-Architektur-Backlog](./GEN-Architektur-Backlog.md)
 - [TEMPLATE-Spezifikation](./TEMPLATE-Spezifikation.md)
