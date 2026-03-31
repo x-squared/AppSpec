@@ -30,28 +30,25 @@ class DevRequest(Base):
     submitter_user_id = Column(
         "SUBMITTER_USER_ID",
         Integer,
-        ForeignKey("USER.ID"),
         nullable=False,
         index=True,
-        comment="User who submitted the request.",
+        comment="Host user id who submitted the request (no local USER FK).",
         info={"label": "Submitter User"},
     )
     claimed_by_user_id = Column(
         "CLAIMED_BY_USER_ID",
         Integer,
-        ForeignKey("USER.ID"),
         nullable=True,
         index=True,
-        comment="Developer user currently claiming this request.",
+        comment="Host user id currently claiming this request (no local USER FK).",
         info={"label": "Claimed By User"},
     )
     decided_by_user_id = Column(
         "DECIDED_BY_USER_ID",
         Integer,
-        ForeignKey("USER.ID"),
         nullable=True,
         index=True,
-        comment="Developer user who submitted the latest development decision.",
+        comment="Host user id who submitted the latest development decision (no local USER FK).",
         info={"label": "Decided By User"},
     )
     status = Column(
@@ -146,6 +143,3 @@ class DevRequest(Base):
     )
 
     parent_request = relationship("DevRequest", remote_side=[id], backref="follow_up_requests")
-    submitter_user = relationship("User", foreign_keys=[submitter_user_id])
-    claimed_by_user = relationship("User", foreign_keys=[claimed_by_user_id])
-    decided_by_user = relationship("User", foreign_keys=[decided_by_user_id])

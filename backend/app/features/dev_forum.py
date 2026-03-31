@@ -3,38 +3,27 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from fastapi import HTTPException
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 
-from ..models import DevRequest, User
+from ..integration import IntegrationPrincipal
+from ..models import DevRequest
 from ..schemas import DevRequestCaptureCreate, DevRequestDecisionUpdate
 
 _DEVELOPMENT_VISIBLE_STATUSES = {"PENDING", "IN_DEVELOPMENT"}
 _REVIEW_VISIBLE_STATUSES = {"REJECTED_REVIEW", "IMPLEMENTED_REVIEW"}
 
 
-def _user_has_dev_role(user: User) -> bool:
-    role_keys = set()
-    if user.role is not None and user.role.type == "ROLE":
-        role_keys.add(user.role.key)
-    for role in user.roles or []:
-        if role is not None and role.type == "ROLE":
-            role_keys.add(role.key)
-    return "DEV" in role_keys
+_DEV_ROLE_KEYS = {"DEV", "DEVELOPER"}
 
 
-def _require_dev_role(user: User) -> None:
-    if not _user_has_dev_role(user):
+def _require_dev_role(principal: IntegrationPrincipal) -> None:
+    if not principal.has_any_role(_DEV_ROLE_KEYS):
         raise HTTPException(status_code=403, detail="DEV role required")
 
 
 def list_review_requests(*, db: Session, current_user_id: int) -> list[DevRequest]:
     return (
         db.query(DevRequest)
-        .options(
-            joinedload(DevRequest.submitter_user),
-            joinedload(DevRequest.claimed_by_user),
-            joinedload(DevRequest.decided_by_user),
-        )
         .filter(
             DevRequest.submitter_user_id == current_user_id,
             DevRequest.status.in_(_REVIEW_VISIBLE_STATUSES),
@@ -44,14 +33,9 @@ def list_review_requests(*, db: Session, current_user_id: int) -> list[DevReques
     )
 
 
-def get_request_for_view(*, db: Session, current_user: User, request_id: int) -> DevRequest:
+def get_request_for_view(*, db: Session, principal: IntegrationPrincipal, request_id: int) -> DevRequest:
     item = (
         db.query(DevRequest)
-        .options(
-            joinedload(DevRequest.submitter_user),
-            joinedload(DevRequest.claimed_by_user),
-            joinedload(DevRequest.decided_by_user),
-        )
         .filter(DevRequest.id == request_id)
         .first()
     )
@@ -59,17 +43,20 @@ def get_request_for_view(*, db: Session, current_user: User, request_id: int) ->
         raise HTTPException(status_code=404, detail="Dev request not found")
 
     is_participant = (
-        item.submitter_user_id == current_user.id
-        or item.claimed_by_user_id == current_user.id
-        or item.decided_by_user_id == current_user.id
+        principal.user_id is not None
+        and (
+            item.submitter_user_id == principal.user_id
+            or item.claimed_by_user_id == principal.user_id
+            or item.decided_by_user_id == principal.user_id
+        )
     )
-    if not is_participant and not _user_has_dev_role(current_user):
+    if not is_participant and not principal.has_any_role(_DEV_ROLE_KEYS):
         raise HTTPException(status_code=403, detail="Not allowed to view this dev request")
     return item
 
 
-def list_request_lineage(*, db: Session, current_user: User, request_id: int) -> list[DevRequest]:
-    item = get_request_for_view(db=db, current_user=current_user, request_id=request_id)
+def list_request_lineage(*, db: Session, principal: IntegrationPrincipal, request_id: int) -> list[DevRequest]:
+    item = get_request_for_view(db=db, principal=principal, request_id=request_id)
 
     root_id = item.id
     cursor = item
@@ -98,11 +85,6 @@ def list_request_lineage(*, db: Session, current_user: User, request_id: int) ->
 
     return (
         db.query(DevRequest)
-        .options(
-            joinedload(DevRequest.submitter_user),
-            joinedload(DevRequest.claimed_by_user),
-            joinedload(DevRequest.decided_by_user),
-        )
         .filter(DevRequest.id.in_(lineage_ids))
         .order_by(DevRequest.created_at.asc(), DevRequest.id.asc())
         .all()
@@ -112,11 +94,11 @@ def list_request_lineage(*, db: Session, current_user: User, request_id: int) ->
 def list_development_requests(
     *,
     db: Session,
-    current_user: User,
+    principal: IntegrationPrincipal,
     include_claimed_by_other_developers: bool,
     filter_claimed_by_user_id: int | None,
 ) -> list[DevRequest]:
-    _require_dev_role(current_user)
+    _require_dev_role(principal)
 
     query = (
         db.query(DevRequest)
@@ -131,7 +113,11 @@ def list_development_requests(
     if filter_claimed_by_user_id is not None:
         query = query.filter(DevRequest.claimed_by_user_id == filter_claimed_by_user_id)
     elif not include_claimed_by_other_developers:
-        query = query.filter((DevRequest.claimed_by_user_id.is_(None)) | (DevRequest.claimed_by_user_id == current_user.id))
+        current_user_id = principal.user_id
+        if current_user_id is None:
+            query = query.filter(DevRequest.claimed_by_user_id.is_(None))
+        else:
+            query = query.filter((DevRequest.claimed_by_user_id.is_(None)) | (DevRequest.claimed_by_user_id == current_user_id))
 
     return query.order_by(DevRequest.created_at.asc(), DevRequest.id.asc()).all()
 
@@ -156,36 +142,40 @@ def create_capture_request_any_mode(*, db: Session, current_user_id: int, payloa
     return create_capture_request(db=db, current_user_id=current_user_id, payload=payload)
 
 
-def claim_request(*, db: Session, current_user: User, request_id: int) -> DevRequest:
-    _require_dev_role(current_user)
+def claim_request(*, db: Session, principal: IntegrationPrincipal, request_id: int) -> DevRequest:
+    _require_dev_role(principal)
+    if principal.user_id is None:
+        raise HTTPException(status_code=422, detail="X-AppSpec-User-Id header required")
     item = db.query(DevRequest).filter(DevRequest.id == request_id).first()
     if item is None:
         raise HTTPException(status_code=404, detail="Dev request not found")
     if item.status not in _DEVELOPMENT_VISIBLE_STATUSES:
         raise HTTPException(status_code=409, detail="Dev request is no longer open for development")
-    if item.claimed_by_user_id is not None and item.claimed_by_user_id != current_user.id:
+    if item.claimed_by_user_id is not None and item.claimed_by_user_id != principal.user_id:
         raise HTTPException(status_code=409, detail="Dev request is already claimed by another developer")
 
-    item.claimed_by_user_id = current_user.id
+    item.claimed_by_user_id = principal.user_id
     item.status = "IN_DEVELOPMENT"
     db.commit()
     db.refresh(item)
     return item
 
 
-def decide_request(*, db: Session, current_user: User, request_id: int, payload: DevRequestDecisionUpdate) -> DevRequest:
-    _require_dev_role(current_user)
+def decide_request(*, db: Session, principal: IntegrationPrincipal, request_id: int, payload: DevRequestDecisionUpdate) -> DevRequest:
+    _require_dev_role(principal)
+    if principal.user_id is None:
+        raise HTTPException(status_code=422, detail="X-AppSpec-User-Id header required")
     item = db.query(DevRequest).filter(DevRequest.id == request_id).first()
     if item is None:
         raise HTTPException(status_code=404, detail="Dev request not found")
     if item.status not in _DEVELOPMENT_VISIBLE_STATUSES:
         raise HTTPException(status_code=409, detail="Dev request is no longer open for development")
-    if item.claimed_by_user_id is not None and item.claimed_by_user_id != current_user.id:
+    if item.claimed_by_user_id is not None and item.claimed_by_user_id != principal.user_id:
         raise HTTPException(status_code=409, detail="Claim this request before deciding it")
 
     normalized_decision = payload.decision.strip().upper()
-    item.claimed_by_user_id = current_user.id
-    item.decided_by_user_id = current_user.id
+    item.claimed_by_user_id = principal.user_id
+    item.decided_by_user_id = principal.user_id
     item.decision = normalized_decision
     item.developer_note_text = (payload.developer_note_text or "").strip() or None
     item.developer_response_text = (payload.developer_response_text or "").strip() or None

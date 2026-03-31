@@ -22,7 +22,7 @@ class AppConfig:
 
 @lru_cache(maxsize=1)
 def get_config() -> AppConfig:
-    default_db_path = (Path(__file__).resolve().parents[2] / "database" / "tpl_app.db").as_posix()
+    default_db_path = (Path(__file__).resolve().parents[2] / "database" / "appspec.db").as_posix()
     return AppConfig(
         env=os.getenv("TPL_ENV", "DEV"),
         database_url=os.getenv("TPL_DATABASE_URL", f"sqlite:///{default_db_path}"),

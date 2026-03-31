@@ -1,0 +1,33 @@
+.rte {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.rte-toolbar {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.rte-btn {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-radius: 8px;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+}
+
+.rte-btn.active {
+  background: rgba(76, 200, 255, 0.25);
+}
+
+.rte-area {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  padding: 0.45rem 0.55rem;
+  color: #fff;
+  outline: none;
+}
+

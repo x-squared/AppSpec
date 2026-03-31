@@ -38,16 +38,6 @@ class DevRequestReviewRejectCreate(BaseModel):
         return trimmed
 
 
-class DevRequestUserResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: int
-    ext_id: str
-    name: str
-    role_id: int | None = None
-    role_ids: list[int] = Field(default_factory=list)
-
-
 class DevRequestResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -69,6 +59,3 @@ class DevRequestResponse(BaseModel):
     created_at: datetime
     changed_at: datetime | None = None
     updated_at: datetime | None = None
-    submitter_user: DevRequestUserResponse | None = None
-    claimed_by_user: DevRequestUserResponse | None = None
-    decided_by_user: DevRequestUserResponse | None = None

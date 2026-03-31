@@ -1,0 +1,21 @@
+.gui-specs-overlay-root { position: fixed; inset: 0; z-index: 999999; }
+.gui-specs-overlay-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.02); }
+.gui-specs-exit-btn { position: fixed; top: .6rem; right: .8rem; z-index: 100002; padding: .35rem .6rem; border: 1px solid rgba(255,255,255,.35); border-radius: 6px; background: rgba(20,24,44,.6); color:#fff; cursor:pointer; }
+.gui-specs-drawing-rect { position: fixed; border: 2px dashed rgba(76,200,255,.9); background: rgba(76,200,255,.08); }
+.gui-specs-naming-card { position: fixed; width: 320px; max-width: calc(100vw - 1rem); padding: .8rem; border-radius: 10px; background: rgba(20,24,44,.92); color: #fff; border: 1px solid rgba(255,255,255,.18); }
+.gui-specs-naming-title { font-weight: 600; margin-bottom: .5rem; }
+.gui-specs-naming-input { width: 100%; padding: .5rem .55rem; border-radius: 8px; border: 1px solid rgba(255,255,255,.18); background: rgba(0,0,0,.2); color: #fff; outline: none; }
+.gui-specs-naming-actions { display:flex; gap:.5rem; margin-top:.7rem; }
+.gui-specs-naming-create, .gui-specs-naming-cancel { flex:1; padding:.45rem .6rem; border-radius:8px; border:1px solid rgba(255,255,255,.18); cursor:pointer; }
+.gui-specs-naming-create { background: rgba(76,200,255,.22); color:#fff; }
+.gui-specs-naming-cancel { background: rgba(255,255,255,.08); color:#fff; }
+.gui-specs-region-layer { position: absolute; inset: 0; }
+.gui-specs-region-box { position: fixed; border: 2px solid rgba(76,200,255,.65); background: rgba(76,200,255,.08); border-radius: 6px; box-sizing: border-box; }
+.gui-specs-region-box.selected { border-color: rgba(255,255,255,.85); background: rgba(255,255,255,.12); }
+.gui-specs-region-badge { position: absolute; top:0; left:0; padding:.18rem .35rem; font-size:.8rem; color:#fff; background: rgba(0,0,0,.35); border-bottom-right-radius: 6px; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.gui-specs-note-popover { position: fixed; width: 360px; max-width: calc(100vw - 1rem); background: rgba(20,24,44,.95); border: 1px solid rgba(255,255,255,.18); border-radius: 12px; padding: .8rem; color:#fff; }
+.gui-specs-note-header { display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-bottom:.6rem; }
+.gui-specs-note-title { font-weight:650; font-size:.95rem; }
+.gui-specs-note-actions { display:flex; gap:.5rem; }
+.gui-specs-note-action { padding:.35rem .55rem; border-radius:8px; border:1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.08); color:#fff; cursor:pointer; }
+

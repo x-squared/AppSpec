@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from ..auth import get_current_user
 from ..database import get_db
 from ..features.dev_forum import (
     accept_review as accept_review_service,
@@ -14,7 +13,7 @@ from ..features.dev_forum import (
     list_review_requests as list_review_requests_service,
     reject_review_and_create_follow_up as reject_review_and_create_follow_up_service,
 )
-from ..models import User
+from ..integration import IntegrationPrincipal, get_integration_principal
 from ..schemas import (
     DevRequestCaptureCreate,
     DevRequestDecisionUpdate,
@@ -28,9 +27,11 @@ router = APIRouter(prefix="/dev-forum/requests", tags=["dev-forum"])
 @router.get("/review", response_model=list[DevRequestResponse])
 def list_review_requests(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    principal: IntegrationPrincipal = Depends(get_integration_principal),
 ):
-    return list_review_requests_service(db=db, current_user_id=current_user.id)
+    if principal.user_id is None:
+        return []
+    return list_review_requests_service(db=db, current_user_id=principal.user_id)
 
 
 @router.get("/development", response_model=list[DevRequestResponse])
@@ -38,11 +39,11 @@ def list_development_requests(
     include_claimed_by_other_developers: bool = Query(False),
     filter_claimed_by_user_id: int | None = Query(None),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    principal: IntegrationPrincipal = Depends(get_integration_principal),
 ):
     return list_development_requests_service(
         db=db,
-        current_user=current_user,
+        principal=principal,
         include_claimed_by_other_developers=include_claimed_by_other_developers,
         filter_claimed_by_user_id=filter_claimed_by_user_id,
     )
@@ -52,36 +53,38 @@ def list_development_requests(
 def get_request_for_view(
     request_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    principal: IntegrationPrincipal = Depends(get_integration_principal),
 ):
-    return get_request_for_view_service(db=db, current_user=current_user, request_id=request_id)
+    return get_request_for_view_service(db=db, principal=principal, request_id=request_id)
 
 
 @router.get("/{request_id}/lineage", response_model=list[DevRequestResponse])
 def list_request_lineage(
     request_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    principal: IntegrationPrincipal = Depends(get_integration_principal),
 ):
-    return list_request_lineage_service(db=db, current_user=current_user, request_id=request_id)
+    return list_request_lineage_service(db=db, principal=principal, request_id=request_id)
 
 
 @router.post("/", response_model=DevRequestResponse, status_code=201)
 def create_capture_request(
     payload: DevRequestCaptureCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    principal: IntegrationPrincipal = Depends(get_integration_principal),
 ):
-    return create_capture_request_service(db=db, current_user_id=current_user.id, payload=payload)
+    if principal.user_id is None:
+        raise HTTPException(status_code=422, detail="X-AppSpec-User-Id header required")
+    return create_capture_request_service(db=db, current_user_id=principal.user_id, payload=payload)
 
 
 @router.post("/{request_id}/claim", response_model=DevRequestResponse)
 def claim_request(
     request_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    principal: IntegrationPrincipal = Depends(get_integration_principal),
 ):
-    return claim_request_service(db=db, current_user=current_user, request_id=request_id)
+    return claim_request_service(db=db, principal=principal, request_id=request_id)
 
 
 @router.post("/{request_id}/decision", response_model=DevRequestResponse)
@@ -89,18 +92,20 @@ def decide_request(
     request_id: int,
     payload: DevRequestDecisionUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    principal: IntegrationPrincipal = Depends(get_integration_principal),
 ):
-    return decide_request_service(db=db, current_user=current_user, request_id=request_id, payload=payload)
+    return decide_request_service(db=db, principal=principal, request_id=request_id, payload=payload)
 
 
 @router.post("/{request_id}/review-accept", response_model=DevRequestResponse)
 def accept_review(
     request_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    principal: IntegrationPrincipal = Depends(get_integration_principal),
 ):
-    return accept_review_service(db=db, current_user_id=current_user.id, request_id=request_id)
+    if principal.user_id is None:
+        raise HTTPException(status_code=422, detail="X-AppSpec-User-Id header required")
+    return accept_review_service(db=db, current_user_id=principal.user_id, request_id=request_id)
 
 
 @router.post("/{request_id}/review-reject", response_model=DevRequestResponse)
@@ -108,11 +113,13 @@ def reject_review(
     request_id: int,
     payload: DevRequestReviewRejectCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    principal: IntegrationPrincipal = Depends(get_integration_principal),
 ):
+    if principal.user_id is None:
+        raise HTTPException(status_code=422, detail="X-AppSpec-User-Id header required")
     return reject_review_and_create_follow_up_service(
         db=db,
-        current_user_id=current_user.id,
+        current_user_id=principal.user_id,
         request_id=request_id,
         review_text=payload.review_text,
     )

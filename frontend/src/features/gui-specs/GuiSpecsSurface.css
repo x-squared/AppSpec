@@ -1,0 +1,24 @@
+.gui-specs-surface { padding: .8rem; }
+.gui-specs-header h2 { margin: 0 0 .6rem 0; font-size: 1.1rem; }
+.gui-specs-error { padding: .5rem .6rem; border-radius: 8px; background: rgba(200,60,60,.15); border: 1px solid rgba(200,60,60,.35); color: #fff; margin-bottom: .6rem; }
+.gui-specs-section { margin-bottom: .85rem; }
+.gui-specs-section-title { font-weight: 650; margin-bottom: .5rem; }
+.gui-specs-section-row { display: flex; align-items: center; justify-content: space-between; gap: .6rem; }
+.gui-specs-actions-row { display: flex; gap: .5rem; align-items: center; }
+.gui-specs-hint { flex: 1; color: rgba(255,255,255,.9); font-size: .9rem; }
+.gui-specs-primary-btn, .gui-specs-secondary-btn { padding: .45rem .65rem; border-radius: 10px; border: 1px solid rgba(255,255,255,.18); cursor: pointer; background: rgba(255,255,255,.08); color: #fff; }
+.gui-specs-primary-btn { background: rgba(76,200,255,.22); }
+.gui-specs-primary-btn:disabled, .gui-specs-secondary-btn:disabled { opacity: .6; cursor: default; }
+.gui-specs-toggle { display: flex; align-items: center; gap: .45rem; color: rgba(255,255,255,.95); font-size: .9rem; }
+.gui-specs-view-list, .gui-specs-region-list { display: flex; flex-direction: column; gap: .45rem; }
+.gui-specs-view-item, .gui-specs-region-item { text-align: left; border-radius: 12px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.06); padding: .55rem .6rem; cursor: pointer; color: #fff; }
+.gui-specs-view-item.active, .gui-specs-region-item.selected { border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.12); }
+.gui-specs-view-name, .gui-specs-region-item-name { font-weight: 650; }
+.gui-specs-view-counts, .gui-specs-region-item-meta { font-size: .86rem; color: rgba(255,255,255,.85); margin-top: .15rem; }
+.gui-specs-muted { color: rgba(255,255,255,.7); font-size: .9rem; }
+.gui-specs-new-view { padding: .6rem; border-radius: 12px; border: 1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.18); }
+.gui-specs-field-label { font-size: .88rem; font-weight: 600; margin: 0 0 .25rem 0; color: rgba(255,255,255,.9); }
+.gui-specs-input { width: 100%; margin-bottom: .5rem; padding: .45rem .55rem; border-radius: 10px; border: 1px solid rgba(255,255,255,.16); background: rgba(0,0,0,.15); color: #fff; outline: none; }
+.gui-specs-new-view-actions { display: flex; gap: .55rem; }
+.gui-specs-impl-form { display: flex; flex-direction: column; gap: .45rem; }
+

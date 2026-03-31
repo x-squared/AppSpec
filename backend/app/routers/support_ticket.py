@@ -1,11 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from ..auth import get_current_user
 from ..database import get_db
 from ..features.dev_forum import create_capture_request_any_mode
 from ..features.support_ticket import get_support_ticket_email
-from ..models import User
+from ..integration import IntegrationPrincipal, get_integration_principal
 from ..schemas import (
     DevRequestCaptureCreate,
     SupportTicketConfigResponse,
@@ -25,11 +24,13 @@ def get_support_ticket_config():
 def capture_support_ticket_dev_forum_entry(
     payload: SupportTicketDevForumCaptureRequest,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    principal: IntegrationPrincipal = Depends(get_integration_principal),
 ):
+    if principal.user_id is None:
+        raise HTTPException(status_code=422, detail="X-AppSpec-User-Id header required")
     created = create_capture_request_any_mode(
         db=db,
-        current_user_id=current_user.id,
+        current_user_id=principal.user_id,
         payload=DevRequestCaptureCreate(
             capture_url=payload.capture_url,
             capture_gui_part=payload.capture_gui_part,

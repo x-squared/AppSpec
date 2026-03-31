@@ -1,0 +1,149 @@
+# AppSpec DIY Manual
+
+Practical command cookbook for running and maintaining AppSpec locally.
+
+Repository root used below:
+
+`AppSpec/`
+
+## 1) Local Paths And Defaults
+
+- Backend working directory: `backend/`
+- Default database file: `database/appspec.db`
+- Default backend URL: `http://127.0.0.1:8010`
+- `TPL_ENV` for local work: `DEV`
+
+Why this matters:
+- All commands below assume you run from AppSpec root first, then switch into `backend/`.
+- The DB URL is intentionally pinned so AppSpec writes to its own DB, not another app's DB.
+
+## 2) Preflight (Run First)
+
+What this does:
+- Validates that your current Python interpreter can import the AppSpec backend package.
+- Prevents running long commands with the wrong interpreter/environment.
+
+```{bash}
+cd backend && python -c "import app.main; print('app import OK')"
+```
+
+If this fails, you are using the wrong Python interpreter for AppSpec.
+
+## 3) Database Setup / Reset (Mandatory Before API Use)
+
+What this does:
+- Creates AppSpec tables from current SQLAlchemy model metadata.
+- Uses only in-repo modules that currently exist in AppSpec.
+- No seed step is available in AppSpec at the moment.
+
+```{bash}
+cd backend && \
+export TPL_ENV=DEV && \
+export TPL_DATABASE_URL="sqlite:///../database/appspec.db" && \
+python - <<'PY'
+from app.database import Base, engine
+import app.models  # registers model metadata
+Base.metadata.create_all(bind=engine)
+print("AppSpec schema created/verified")
+PY
+```
+
+Alternative (if your terminal is already in `backend/`):
+
+```{bash}
+export TPL_ENV=DEV
+export TPL_DATABASE_URL="sqlite:///../database/appspec.db"
+python - <<'PY'
+from app.database import Base, engine
+import app.models
+Base.metadata.create_all(bind=engine)
+print("AppSpec schema created/verified")
+PY
+```
+
+## 4) Start Backend
+
+What this does:
+- Starts AppSpec API server on port `8010`.
+- `--reload` auto-restarts server when backend files change.
+- If `8010` is already occupied, first stop the listener process.
+
+Kill existing process on `8010` (optional but recommended before restart):
+
+```{bash}
+pid=$(lsof -tiTCP:8010 -sTCP:LISTEN)
+if [ -n "$pid" ]; then
+  kill "$pid"
+fi
+```
+
+```{bash}
+cd backend && \
+export TPL_ENV=DEV && \
+export TPL_DATABASE_URL="sqlite:///../database/appspec.db" && \
+uvicorn app.main:app --reload --port 8010
+```
+
+Health check:
+
+What this confirms:
+- Server process is reachable on `8010`.
+- Basic API startup works before testing feature endpoints.
+
+```{bash}
+curl http://127.0.0.1:8010/api/health
+```
+
+## 5) Verify GUI-Spec Endpoint
+
+What this confirms:
+- Route registration is correct (`/api/gui-specs/views` exists).
+- Backend can process request up to auth/role checks.
+
+```{bash}
+curl -i \
+  -H "X-AppSpec-User-Id: 7" \
+  -H "X-AppSpec-Roles: DEV,SPECIFICATION_USER" \
+  http://127.0.0.1:8010/api/gui-specs/views?include_done=false
+```
+
+Expected:
+- `403` if developer role is missing
+- not `404`
+- not `500`
+
+## 6) Use From TPLK Frontend (Glue Mode)
+
+What this does:
+- Points TPLK frontend to AppSpec backend for GUI-spec calls.
+- Lets you open overlay UI in TPLK while AppSpec remains backend owner.
+
+```{bash}
+cd ../TPLK-App/frontend
+export VITE_APPSPEC_API_BASE_URL=http://127.0.0.1:8010
+npm run dev
+```
+
+## 7) Troubleshooting
+
+### `Could not reach the server`
+- AppSpec backend not running on `8010`
+- or frontend not restarted after exporting `VITE_APPSPEC_API_BASE_URL`
+
+### `sqlite3.OperationalError: no such table: USER`
+- Legacy hint from old scaffold.
+- AppSpec no longer owns local `USER` tables.
+- If you see any `no such table` error, run Section 3 and restart backend.
+
+### `sqlite3.OperationalError: unable to open database file`
+- Wrong DB URL/path; use:
+  - `sqlite:///../database/appspec.db` (when run from `backend/`)
+
+### `ModuleNotFoundError: No module named 'app'`
+- Start commands from wrong directory.
+- Use the chained form in this manual (`cd backend && ...`) to enforce correct module path.
+
+### Commands accidentally concatenated into one line
+- Run commands line-by-line (`cd`, `export`, `python ...`, `uvicorn ...`).
+
+

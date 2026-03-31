@@ -1,0 +1,113 @@
+# GUI Discussion Builder Capability Contract
+
+## 1) Purpose
+The *GUI Discussion Builder* enables developers to discuss existing or planned GUI parts by:
+
+- Overlaying the current app screen with editable “regions”.
+- Storing rich-text notes per region.
+- Persisting regions inside a “view” (a discussion/scratch canvas).
+- Supporting developer execution linkage (implementation references) and a `DONE` workflow state.
+
+This repository delivers the TPLK pilot (frontend overlay + backend `/api/gui-specs` endpoints). The contract below is intended to be reused by other apps so the semantics stay consistent.
+
+## 2) Conceptual Objects
+
+### 2.1 GUI Spec View (`GUI_SPEC_VIEW`)
+A persisted discussion container.
+
+Key fields:
+- `id`
+- `name`, `description`
+- `view_type` (v1 uses `SCRATCH_VIEW`)
+- `capture_url`, `capture_gui_part`, `capture_state_json` (UI context for reopening)
+
+### 2.2 GUI Spec Region (`GUI_SPEC_REGION`)
+A persisted rectangular region anchored to a GUI part.
+
+Key fields:
+- `id`, `view_id`
+- `region_type`: `EXISTING_PART` or `NEW_PART`
+- `label`
+- Anchor metadata for `EXISTING_PART`:
+  - `anchor_selector`, `anchor_id`, `anchor_class_name`, `anchor_tag`, `anchor_text_sample`
+- Geometry stored as viewport-relative percentages scaled by `1000`:
+  - `left_pct`, `top_pct`, `width_pct`, `height_pct`
+- `z_index` for overlap stacking
+- `status`: `OPEN`, `IN_PROGRESS`, `DONE`
+
+### 2.3 GUI Spec Note (`GUI_SPEC_NOTE`)
+Rich-text (minimal formatting supported by the frontend editor) persisted per region.
+
+Key fields:
+- `id`, `region_id` (1:1)
+- `rich_text_html`
+
+### 2.4 GUI Spec Implementation Link (`GUI_SPEC_IMPL_LINK`)
+An optional persisted reference to related code.
+
+Key fields:
+- `id`, `region_id` (1:1)
+- `repo_key`, `module_path`, `file_path`, `symbol`, `commit_hash`
+- `note`
+
+## 3) Overlap Handling (v1 UX Semantics)
+- Regions can overlap.
+- `z_index` is the canonical stacking order.
+- UI selection is “topmost first” by relying on z-order in rendering (frontend picks the region under the click at its z-index position).
+
+No server-side overlap resolution is required for v1; the server persists geometry + z-index.
+
+## 4) DONE State Semantics
+- Regions with `status = DONE` are hidden by default in region lists and overlay rendering.
+- A UI toggle can include DONE regions for review.
+
+The `DONE` transition does not delete regions, notes, or implementation links.
+
+## 5) API Contract (TPLK Pilot)
+Base path: `/api/gui-specs`
+
+Authorization:
+- Service requires a developer role key `DEV`.
+- Endpoints are available in `DEV/TEST` mode (v1 guardrail).
+
+### 5.1 Views
+- `GET /views?include_done={bool}`
+  - Returns a list of views with counts: `open_regions_count`, `done_regions_count`.
+  - v1 list summary does not require region inclusion.
+- `POST /views`
+  - Creates a new view.
+  - Payload: `name`, `description`, `view_type`, `capture_url`, `capture_gui_part`, `capture_state_json`.
+- `GET /views/{view_id}`
+  - Returns full view details (including capture context for reopening).
+
+### 5.2 Regions
+- `GET /views/{view_id}/regions?include_done={bool}`
+  - Returns regions ordered by `z_index`, including `note` and `impl_link` details when present.
+- `POST /views/{view_id}/regions`
+  - Creates a region with:
+    - `region_type`, `label`
+    - anchor metadata (for `EXISTING_PART`)
+    - geometry percent fields (scaled by `1000`)
+    - optional `z_index`, `status`
+- `PATCH /regions/{region_id}/note`
+  - Updates/creates the region’s `GUI_SPEC_NOTE`.
+- `PATCH /regions/{region_id}/status`
+  - Updates region status (`OPEN`, `IN_PROGRESS`, `DONE`).
+
+### 5.3 Implementation Links
+- `PUT /regions/{region_id}/impl-link`
+  - Creates or updates the region’s `GUI_SPEC_IMPL_LINK` (1:1 upsert).
+
+## 6) Navigation / Reopening Context
+Each view stores capture context (`capture_url`, `capture_gui_part`, `capture_state_json`).
+
+The pilot reuses the existing *Dev Forum* navigation/capture event mechanism so reopening a saved GUI spec view navigates back to the stored app context before overlay rendering.
+
+## 7) Migration Path from Pilot
+To adopt this capability in another app:
+1. Implement backend persistence with the same v1 entities and field semantics (`GUI_SPEC_*`).
+2. Implement the same `/api/gui-specs/*` endpoints and request/response shapes.
+3. Reuse the same frontend editor component contract (rich-text HTML stored in `GUI_SPEC_NOTE`).
+4. Preserve DONE default filtering behavior and overlap semantics (`z_index`).
+5. Ensure the app stores capture context on view creation so reopened discussions remain aligned with the originating UI geometry.
+

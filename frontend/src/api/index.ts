@@ -127,6 +127,23 @@ export type {
   E2ETestRunRequest,
   E2ETestRunResponse,
 } from './e2eTests';
+export { guiSpecsApi } from './guiSpecs';
+export type {
+  GuiSpecImplLink,
+  GuiSpecImplLinkUpsert,
+  GuiSpecNote,
+  GuiSpecNoteUpdate,
+  GuiSpecRegion,
+  GuiSpecRegionCreate,
+  GuiSpecRegionGeometry,
+  GuiSpecRegionStatusKey,
+  GuiSpecRegionStatusUpdate,
+  GuiSpecRegionTypeKey,
+  GuiSpecView,
+  GuiSpecViewCreate,
+  GuiSpecViewListItem,
+  GuiSpecViewTypeKey,
+} from './guiSpecs';
 
 import { authApi, codesApi, medicalValueTemplatesApi, medicalValueGroupsApi, usersApi, translationsApi, adminAccessApi, adminSchedulerApi, personsApi, adminPeopleApi, adminProcurementConfigApi, adminCatalogueApi, supportTicketApi, devForumApi } from './core';
 import { patientsApi } from './patients';
@@ -137,6 +154,7 @@ import { favoritesApi } from './favorites';
 import { informationApi } from './information';
 import { reportsApi } from './reports';
 import { e2eTestsApi } from './e2eTests';
+import { guiSpecsApi } from './guiSpecs';
 
 export const api = {
   ...authApi,
@@ -161,4 +179,5 @@ export const api = {
   ...informationApi,
   ...reportsApi,
   ...e2eTestsApi,
+  ...guiSpecsApi,
 };

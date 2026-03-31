@@ -1,16 +1,10 @@
 from .dev_forum import DevRequest
-from .person import Person, PersonTeam
-from .rbac import AccessPermission
-from .reference import Catalogue, Code, TranslationBundle
-from .user import User
+from .gui_specs import GuiSpecImplLink, GuiSpecNote, GuiSpecRegion, GuiSpecView
 
 __all__ = [
-    "AccessPermission",
-    "Catalogue",
-    "Code",
     "DevRequest",
-    "Person",
-    "PersonTeam",
-    "TranslationBundle",
-    "User",
+    "GuiSpecView",
+    "GuiSpecRegion",
+    "GuiSpecNote",
+    "GuiSpecImplLink",
 ]
